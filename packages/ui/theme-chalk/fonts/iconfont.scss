@@ -1,0 +1,313 @@
+@use "../mixins/mixins.scss" as *;
+@font-face {
+  font-family: "iconfont"; /* Project id 2526523 */
+  src: url("//at.alicdn.com/t/c/font_2526523_pfq3pyx2iag.woff2?t=1669977754143")
+      format("woff2"),
+    url("//at.alicdn.com/t/c/font_2526523_pfq3pyx2iag.woff?t=1669977754143")
+      format("woff"),
+    url("//at.alicdn.com/t/c/font_2526523_pfq3pyx2iag.ttf?t=1669977754143")
+      format("truetype");
+}
+
+.#{$namespace}-icon {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-app-region: no-drag;
+
+  &:before {
+    font-size: inherit;
+  }
+
+  &.xihuan-fill:before {
+    content: "\e633";
+  }
+
+  &.xihuan:before {
+    content: "\e648";
+  }
+
+  &.xiazai:before {
+    content: "\e61b";
+  }
+
+  &.recentlyplay:before {
+    content: "\e6d7";
+  }
+
+  &.qiandao:before {
+    content: "\ebad";
+  }
+
+  &.member:before {
+    content: "\e640";
+  }
+
+  &.shopmall:before {
+    content: "\e63c";
+  }
+  &.geshou:before {
+    content: "\e61a";
+  }
+  &.musicalnote:before {
+    content: "\e619";
+  }
+  &.zhuanji:before {
+    content: "\e618";
+  }
+  &.liebiao:before {
+    content: "\e644";
+  }
+
+  &.maximize:before {
+    content: "\e65d";
+  }
+
+  &.restore:before {
+    content: "\e692";
+  }
+
+  &.minimize:before {
+    content: "\e616";
+  }
+
+  &.tishi:before {
+    content: "\e611";
+  }
+
+  &.jiesuo:before {
+    content: "\e62f";
+  }
+
+  &.shouji:before {
+    content: "\e615";
+  }
+
+  &.lajitong:before {
+    content: "\e646";
+  }
+
+  &.xinjianwenjian:before {
+    content: "\e637";
+  }
+
+  &.zuijinbofang:before {
+    content: "\e610";
+  }
+
+  &.youjiantou:before {
+    content: "\e680";
+  }
+
+  &.htmal5icon03:before {
+    content: "\e626";
+  }
+
+  &.dengji:before {
+    content: "\e629";
+  }
+
+  &.guanbi:before {
+    content: "\e613";
+  }
+
+  &.you:before {
+    content: "\e60b";
+  }
+
+  &.exit:before {
+    content: "\e614";
+  }
+
+  &.sousuo:before {
+    content: "\e60a";
+  }
+
+  &.jiahao:before {
+    content: "\e627";
+  }
+
+  &.shuaxin:before {
+    content: "\ec08";
+  }
+
+  &.microphone:before {
+    content: "\e683";
+  }
+
+  &.mailbox:before {
+    content: "\e72d";
+  }
+
+  &.setting:before {
+    content: "\e617";
+  }
+
+  &.prev:before {
+    content: "\e87e";
+  }
+
+  &.forward:before {
+    content: "\e87e";
+    display: inline-block;
+    transform: rotateZ(180deg);
+  }
+
+  &.gerenxinxi:before {
+    content: "\e635";
+  }
+
+  &.huitui:before {
+    content: "\e60e";
+  }
+
+  &.clothes:before {
+    content: "\e8c7";
+  }
+
+  &.duihao:before {
+    content: "\e60f";
+  }
+
+  &.test:before {
+    content: "\e66b";
+  }
+
+  &.fengge1:before {
+    content: "\e612";
+  }
+
+  &.chabei:before {
+    content: "\e62c";
+  }
+
+  &.yuzhong:before {
+    content: "\e6d5";
+  }
+
+  &.fengge:before {
+    content: "\e609";
+  }
+
+  &.qinggan:before {
+    content: "\e689";
+  }
+
+  &.huangguan:before {
+    content: "\e608";
+  }
+
+  &.quxiaoquanping:before {
+    content: "\e93e";
+  }
+
+  &.fullscreen:before {
+    content: "\e93f";
+  }
+
+  &.zan:before {
+    content: "\e607";
+  }
+
+  &.lianjie:before {
+    content: "\e606";
+  }
+
+  &.mv:before {
+    content: "\e639";
+  }
+
+  &.VIP:before {
+    content: "\e670";
+  }
+
+  &.yinliang:before {
+    content: "\e61d";
+  }
+
+  &.zhankailiebiao:before {
+    content: "\e70f";
+  }
+
+  &.shoucang:before {
+    content: "\e604";
+  }
+
+  &.shoucang1:before {
+    content: "\e6f6";
+  }
+
+  &.dan-like-outline:before {
+    content: "\e63a";
+  }
+
+  &.fenxiang:before {
+    content: "\e62e";
+  }
+
+  &.xiazai1:before {
+    content: "\e61c";
+  }
+
+  &.pause:before {
+    content: "\e605";
+  }
+
+  &.suijibofang:before {
+    content: "\e67d";
+  }
+
+  &.biao-:before {
+    content: "\e62b";
+  }
+
+  &.xiayishou:before {
+    content: "\e60d";
+  }
+
+  &.ci:before {
+    content: "\e6c8";
+  }
+
+  &.bofang:before {
+    content: "\e6ce";
+  }
+
+  &.danquxunhuan_:before {
+    content: "\ebe9";
+  }
+
+  &.danquxunhuan:before {
+    content: "\e602";
+  }
+
+  &.xiayishou-left:before {
+    content: "\e603";
+  }
+
+  &.yinyue-copy:before {
+    content: "\e600";
+  }
+
+  &.QQ2:before {
+    content: "\ec33";
+  }
+
+  &.weixin1:before {
+    content: "\e60c";
+  }
+
+  &.wangyiyunyinle:before {
+    content: "\e9ac";
+  }
+
+  &.weibo:before {
+    content: "\e67a";
+  }
+
+  &.netease:before {
+    content: "\e63b";
+  }
+}

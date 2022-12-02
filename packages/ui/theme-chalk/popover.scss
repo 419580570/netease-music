@@ -1,0 +1,22 @@
+@use "./mixins/config.scss" as *;
+
+.#{$namespace}-popover {
+  top: 100%;
+  position: absolute;
+  z-index: 999;
+  border-radius: 8px;
+  box-shadow: 0 0 5px 0 rgb(217, 217, 217);
+  overflow-y: auto;
+  background-color: #fff;
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: rgb(224, 224, 224);
+    border-radius: 5px;
+    &:hover {
+      background-color: rgb(212, 212, 212);
+    }
+  }
+}

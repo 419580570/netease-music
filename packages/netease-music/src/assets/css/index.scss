@@ -1,0 +1,49 @@
+@import "ui.scss";
+
+html,
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+textarea,
+input,
+select,
+ul,
+ol,
+li,
+fieldset,
+figure {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+html,
+body {
+  height: 100%;
+  user-select: none;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+#app {
+  height: 100%;
+}
+ul,
+li {
+  list-style: none;
+}
+
+.clearfix:after {
+  content: " ";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+.no-drag {
+  -webkit-app-region: no-drag;
+}

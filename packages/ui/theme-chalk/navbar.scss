@@ -1,0 +1,30 @@
+@use "./mixins/config.scss" as *;
+
+.#{$namespace}-navbar {
+  display: flex;
+  align-items: center;
+  line-height: 100%;
+  color: rgb(52, 52, 52);
+  li {
+    margin: 0 10px;
+    cursor: pointer;
+    &:first-child {
+      margin-left: 0;
+    }
+    cursor: pointer;
+    &.currentRoute {
+      font-weight: 600;
+      position: relative;
+      &::after {
+        content: "";
+        width: 90%;
+        height: 0.11em;
+        background-color: #e44141;
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+  }
+}

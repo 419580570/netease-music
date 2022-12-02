@@ -1,0 +1,26 @@
+@use "./mixins/config.scss" as *;
+
+.#{$namespace}-dropdown {
+  &.#{$namespace}-popover {
+    box-shadow: none;
+    border: 1px solid rgb(216, 216, 216);
+    transform: translateX(-1px);
+    border-radius: 0;
+    border-end-end-radius: 5px;
+    border-end-start-radius: 5px;
+  }
+  .dropdown-wrapper {
+    position: relative;
+    height: 100%;
+    .dropdown-item {
+      font-size: 12px;
+      height: 25px;
+      position: relative;
+      line-height: 25px;
+      cursor: pointer;
+      &:hover {
+        background-color: rgb(240, 241, 242);
+      }
+    }
+  }
+}

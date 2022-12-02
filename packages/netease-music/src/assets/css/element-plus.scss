@@ -1,0 +1,101 @@
+.el-container {
+  height: 100%;
+  .el-header {
+    padding: 0;
+  }
+  .el-aside {
+    border-right: 1px solid rgb(225, 225, 225);
+  }
+}
+
+/* el-dialog start */
+.el-dialog {
+  top: 20vh;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+  .el-dialog__title {
+    font-size: 16px;
+    font-weight: 800;
+  }
+  .el-dialog--center {
+    .el-dialog__body {
+      text-align: center;
+    }
+  }
+  .el-dialog__footer button {
+    border-radius: 30px;
+    height: 33px;
+    line-height: 33px;
+    padding: 0 25px;
+  }
+  .el-button:focus,
+  .el-dialog__footer button:hover {
+    color: #fff;
+    border-color: rgb(236, 53, 53);
+    background-color: rgb(236, 53, 53);
+  }
+}
+/* el-dialog end */
+
+/* el-popover start */
+.el-popper {
+  padding: 0 !important;
+  top: 8px !important;
+  .el-popper__arrow {
+    display: none;
+  }
+}
+/* el-popover end */
+
+/* el-carousel start */
+.el-carousel {
+  width: 100%;
+  img {
+    /* width: 550px; */
+    cursor: pointer;
+    /* position: relative; */
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+  }
+  .text {
+    text-align: center;
+    position: absolute;
+    height: 20px;
+    line-height: 18px;
+    right: 0px;
+    bottom: 0px;
+    padding: 0 10px;
+    font-size: 5px;
+    color: #fff;
+    border-top-left-radius: 6px;
+    border-bottom-right-radius: 8px;
+  }
+  .el-carousel__button {
+    width: 6px;
+    height: 6px;
+    margin: 0 4px;
+    background-color: rgb(160, 160, 160);
+    border-radius: 50%;
+  }
+  .is-active {
+    button {
+      background: rgb(236, 65, 65);
+    }
+  }
+  .el-carousel__indicator--horizontal {
+    padding: 12px 0;
+  }
+  .el-carousel__arrow {
+    /* display: none; */
+    background-color: #000;
+    /* margin-bottom: 0px; */
+    border-radius: 50%;
+    top: 54%;
+    width: 29px;
+    height: 29px;
+    background-size: 6px 44px;
+    opacity: 0.4;
+    outline: none;
+  }
+}
+/* el-carousel end */

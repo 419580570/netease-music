@@ -1,0 +1,27 @@
+@use "./fonts/iconfont.scss";
+.#{$namespace}-loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: $font-color-grey;
+  font-size: 14px;
+  svg {
+    animation: rotate 1s linear 0s infinite;
+    margin-right: 10px;
+  }
+  .loadingLine {
+    transform-origin: 50% 50%;
+    transform: rotateZ(calc(45deg * var(--i)));
+    opacity: calc(0.125 * var(--i));
+  }
+  @keyframes rotate {
+    0% {
+      transform: rotateZ(0);
+    }
+    100% {
+      transform: rotateZ(360deg);
+    }
+  }
+}

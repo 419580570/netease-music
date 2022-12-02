@@ -1,0 +1,134 @@
+import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+
+const routes: Array<RouteRecordRaw> = [
+  {
+    path: "/",
+    redirect: "/home",
+  },
+  {
+    path: "/home",
+    component: () => import("@/views/Home/index.vue"),
+    children: [
+      {
+        path: "/",
+        redirect: "/discover",
+      },
+      {
+        path: "/discover",
+        component: () => import("@/views/discover/index.vue"),
+        redirect: "/discover/recommend",
+        children: [
+          {
+            path: "/discover/recommend",
+            component: () =>
+              import("@/views/discover/childRoutes/recommend.vue"),
+          },
+          {
+            path: "/discover/customized",
+            component: () =>
+              import("@/views/discover/childRoutes/customized.vue"),
+          },
+          {
+            path: "/discover/playlist",
+            component: () =>
+              import("@/views/discover/childRoutes/playlist.vue"),
+            // redirect: "/discover/playlist/playlists",
+            // children: [
+            //   {
+            //     path: "/discover/playlist/playlists",
+            //     component: Playlists,
+            //   },
+            //   {
+            //     path: "/discover/playlist/bestplaylist/:id",
+            //     component: BestPlaylist,
+            //   },
+            // ],
+          },
+          {
+            path: "/discover/rankinglist",
+            component: () =>
+              import("@/views/discover/childRoutes/rankinglist.vue"),
+          },
+          {
+            path: "/discover/singer",
+            component: () => import("@/views/discover/childRoutes/singer.vue"),
+          },
+          {
+            path: "/discover/latestmusic",
+            component: () =>
+              import("@/views/discover/childRoutes/latestmusic.vue"),
+            // redirect: "/discover/latestmusic/newsong",
+            // children: [
+            //   {
+            //     path: "/discover/latestmusic/newsong",
+            //     component: NewSong,
+            //   },
+            //   {
+            //     path: "/discover/latestmusic/newalbum",
+            //     component: NewAlbum,
+            //   },
+            // ],
+          },
+        ],
+      },
+      // {
+      //   path: "/broadcast",
+      //   component: Broadcast,
+      // },
+      // {
+      //   path: "/friend",
+      //   component: Friend,
+      // },
+      // {
+      //   path: "/video",
+      //   component: Video,
+      // },
+      // {
+      //   path: "/private",
+      //   component: Private,
+      // },
+      {
+        path: "/playlist/:id",
+        component: () => import("@/views/playlist/index.vue"),
+        children: [
+          {
+            path: "",
+            name: "list",
+            component: () => import("@/views/playlist/list.vue"),
+          },
+          {
+            path: "",
+            name: "comment",
+            component: () => import("@/views/playlist/comment.vue"),
+          },
+          {
+            path: "",
+            name: "collector",
+            component: () => import("@/views/playlist/collector.vue"),
+          },
+        ],
+      },
+    ],
+  },
+  {
+    path: "/login",
+    redirect: "/login/qrcode",
+    children: [
+      {
+        path: "/login/qrcode",
+        component: () => import("@/views/Login/index.vue"),
+      },
+      {
+        path: "/login/phonenumber",
+        component: () => import("@/views/Login/loginPhone.vue"),
+      },
+    ],
+  },
+];
+
+const router = createRouter({
+  history: createWebHistory(process.env.BASE_URL),
+  routes,
+});
+
+export default router;
