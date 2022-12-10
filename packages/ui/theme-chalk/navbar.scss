@@ -15,6 +15,9 @@
     &.currentRoute {
       font-weight: 600;
       position: relative;
+      &.enlargeActive {
+        font-size: calc(1em + 3px);
+      }
       &::after {
         content: "";
         width: 90%;

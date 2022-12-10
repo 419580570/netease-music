@@ -7,3 +7,5 @@ export * from "./dialog";
 export * from "./dropdown";
 export * from "./notify";
 export * from "./loading";
+export * from "./carousel";
+export * from "./list";

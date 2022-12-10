@@ -6,6 +6,8 @@ import { NDialog } from "ui/components/dialog";
 import { NDropdown } from "ui/components/dropdown";
 import { NNotify } from "ui/components/notify";
 import { NLoading } from "ui/components/loading";
+import { NCarousel } from "ui/components/carousel";
+import { NList } from "ui/components/list";
 import type { Plugin } from "vue";
 
 export default [
@@ -17,4 +19,6 @@ export default [
   NDropdown,
   NNotify,
   NLoading,
+  NCarousel,
+  NList,
 ] as Plugin[];

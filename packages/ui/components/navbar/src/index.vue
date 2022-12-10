@@ -3,7 +3,10 @@
     <li
       v-for="(item, index) in list"
       :key="index"
-      :class="{ currentRoute: currentRoute === item }"
+      :class="{
+        currentRoute: currentRoute === item,
+        enlargeActive: enlargeActive,
+      }"
       @click="changeRoute(item, index)"
     >
       {{ item }}
@@ -17,9 +20,13 @@ export default defineComponent({
 });
 </script>
 <script lang="ts" setup>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, withDefaults } from "vue";
 
-const props = defineProps<{ list: String[]; size: Number }>();
+const props = defineProps<{
+  list: String[];
+  size?: Number;
+  enlargeActive?: Boolean;
+}>()
 const emits = defineEmits(["NavbarClick"]);
 const currentRoute = ref(props.list[0]);
 

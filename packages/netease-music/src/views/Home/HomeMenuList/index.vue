@@ -12,7 +12,7 @@
         ></Icon
       ></span>
       <div
-        class="groupItem"
+        class="groupItem hover"
         :class="{ active: activeLabel == item.label }"
         v-for="(item, index) in list.groupItem"
         v-show="list.icon ? list.open : true"
@@ -34,11 +34,11 @@ const menuList = reactive([
     title: null,
     groupItem: [
       { label: "发现音乐", icon: null, url: "/discover" },
-      { label: "播客" },
-      { label: "视频" },
-      { label: "关注" },
-      { label: "直播" },
-      { label: "私人FM" },
+      { label: "播客", icon: null, url: "/broadcast" },
+      { label: "视频", icon: null, url: "/video" },
+      { label: "关注", icon: null, url: "/interest" },
+      { label: "直播", icon: null, url: "/live" },
+      { label: "私人FM", icon: null, url: "/private" },
     ],
   },
   {
@@ -70,14 +70,20 @@ const menuList = reactive([
   },
 ]);
 const activeLabel = ref("发现音乐");
+const activeUrl = ref("/discover");
 
 const openGroup = (list: any) => {
   list.open = !list.open;
 };
 const changeActiveLabel = (item: any) => {
   activeLabel.value = item.label;
-  router.push(item.url);
+  item.url && (activeUrl.value = item.url);
+  item.url && router.push(item.url);
 };
+
+onMounted(() => {
+  router.push(activeUrl.value);
+});
 </script>
 
 <style scoped lang="scss">
@@ -115,7 +121,7 @@ const changeActiveLabel = (item: any) => {
       cursor: pointer;
       &:hover {
         @include hover-menuList();
-        background-color: rgb(246, 246, 247);
+        // background-color: rgb(246, 246, 247);
       }
       &.active {
         @include hover-menuList();

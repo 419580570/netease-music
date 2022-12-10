@@ -1,0 +1,49 @@
+@use "./mixins/config.scss" as *;
+
+.#{$namespace}-list {
+  width: 100%;
+  &-line {
+    display: flex;
+    flex-wrap: wrap;
+    &:not(:last-child) {
+      margin-bottom: var(--gapv);
+    }
+  }
+  &-item {
+    cursor: pointer;
+    flex: 1;
+    &:not(:last-child) {
+      margin-right: var(--gaph);
+    }
+    &__title {
+      max-height: 38px;
+      overflow: hidden;
+      margin-top: 4px;
+      font-size: 14px;
+      color: rgb(55, 55, 55);
+    }
+    &__content {
+      position: relative;
+      overflow: hidden;
+      &:hover {
+        &.fall::after {
+          transform: translateY(0);
+        }
+      }
+      &.fall::after {
+        transition: transform 0.3s ease;
+        transition-delay: 0.5s;
+        content: attr(data-fall);
+        box-sizing: border-box;
+        font-size: 12px;
+        color: #fff;
+        position: absolute;
+        top: 0;
+        transform: translateY(-100%);
+        width: 100%;
+        padding: 10px;
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+    }
+  }
+}

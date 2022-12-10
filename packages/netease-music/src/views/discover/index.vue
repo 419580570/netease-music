@@ -1,5 +1,5 @@
 <template>
-  <nav-bar :list="discoverList"></nav-bar>
+  <Navbar :list="nav" @NavbarClick="handleClick" :enlargeActive="true"></Navbar>
   <div class="discover">
     <router-view v-slot="{ Component }">
       <keep-alive>
@@ -10,26 +10,41 @@
 </template>
 
 <script lang="ts" setup>
-import NavBar from "@/components/navBar/index.vue";
-interface listType {
-  title: string;
-  path: string;
-}
-const discoverList: Array<listType> = [
-  { title: "个性推荐", path: "/discover/recommend" },
-  { title: "专属定制", path: "/discover/customized" },
-  { title: "歌单", path: "/discover/playlist" },
-  { title: "排行榜", path: "/discover/rankinglist" },
-  { title: "歌手", path: "/discover/singer" },
-  { title: "最新音乐", path: "/discover/latestmusic" },
-];
+const router = useRouter();
+const discoverList: Record<string, string> = {
+  个性推荐: "/discover/recommend",
+  专属定制: "/discover/customized",
+  歌单: "/discover/playlist",
+  排行榜: "/discover/rankinglist",
+  歌手: "/discover/singer",
+  最新音乐: "/discover/latestmusic",
+};
+
+const nav: string[] = Object.keys(discoverList);
+
+const handleClick = (index: number) => {
+  router.push(discoverList[nav[index]]);
+};
 </script>
 
 <style scoped lang="scss">
+@import "@/assets/css/handle";
+.n-navbar {
+  @include main_color();
+  position: sticky;
+  top: -30px;
+  z-index: 10;
+  height: 50px;
+  padding-top: 10px;
+  margin-top: -40px;
+}
 .discover {
-  padding: 30px 10px 0;
   display: flex;
-  align-items: center;
   justify-content: center;
+  padding: 30px 0 0;
+  height: 100%;
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
 }
 </style>

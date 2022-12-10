@@ -18,7 +18,7 @@
 
     <!-- 登录 -->
     <span class="popoverWrapper">
-      <Popover trigger="click" width="280px" height="330px" :disable="!isLogin">
+      <Popover trigger="click" width="280px" height="332px" :disable="!isLogin">
         <template #reference>
           <span @click="toLogin" class="leftspan no-drag">
             <img :src="profile.avatarUrl" class="avatar" />

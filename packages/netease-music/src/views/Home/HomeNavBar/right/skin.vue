@@ -2,7 +2,7 @@
   <div class="skin-wrapper">
     <Navbar
       class="navbar"
-      :list="test"
+      :list="theme"
       :size="16"
       @NavbarClick="handleClick"
     ></Navbar>
@@ -80,7 +80,7 @@ const { addStorage, getStorage } = utils();
 
 const themeOrPure = ref(0);
 const currentPick = ref(getStorage("color-pick"));
-const profile = userProfileStore()
+const profile = userProfileStore();
 
 const handleClick = (index: number) => {
   themeOrPure.value = index;
@@ -90,13 +90,15 @@ const changeTheme = (val: number | string) => {
   if (typeof val == "string") {
     document.documentElement.setAttribute("data-theme", "default");
     document.documentElement.setAttribute("style", `--custom-theme: ${val}`);
-    !profile.isLogin && (profile.profile.avatarUrl = `/src/assets/img/avatar-ofRed.png`)
+    !profile.isLogin &&
+      (profile.profile.avatarUrl = `/src/assets/img/avatar-ofRed.png`);
     currentPick.value = val;
     addStorage("color-pick", val);
   } else {
     const type = val ? "ofRed" : "coDark";
     document.documentElement.setAttribute("data-theme", type);
-    !profile.isLogin && (profile.profile.avatarUrl = `/src/assets/img/avatar-${type}.png`)
+    !profile.isLogin &&
+      (profile.profile.avatarUrl = `/src/assets/img/avatar-${type}.png`);
     currentPick.value = type;
     addStorage("color-pick", type);
   }
@@ -105,7 +107,10 @@ const changeTheme = (val: number | string) => {
 onMounted(() => {
   const pick = getStorage("color-pick");
   const type = pick === "ofRed" || pick === "coDark" ? pick : "default";
-  !profile.isLogin && (profile.profile.avatarUrl = `/src/assets/img/avatar-${pick || "ofRed"}.png`)
+  !profile.isLogin &&
+    (profile.profile.avatarUrl = `/src/assets/img/avatar-${
+      pick !== "ofRed" && pick !== "coDark" ? "ofRed" : pick
+    }.png`);
   document.documentElement.setAttribute("data-theme", type);
   pick !== "custom" &&
     document.documentElement.setAttribute("style", `--custom-theme: ${pick}`);
@@ -126,7 +131,7 @@ const colorList = [
   "rgb(253,84,78)",
 ];
 
-const test = ["主题", "纯色"];
+const theme = ["主题", "纯色"];
 
 const {
   value: pickAll,
@@ -263,7 +268,7 @@ const { lmtrgb } = useCalcRgb(percentAll, percentPart);
       height: 1.36em;
       text-align: center;
       line-height: 1.36em;
-      background-color: rgb(236,65,65);
+      background-color: rgb(236, 65, 65);
       border-radius: 50%;
       border-width: 2px;
       border-style: solid;

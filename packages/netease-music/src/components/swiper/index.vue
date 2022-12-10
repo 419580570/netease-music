@@ -1,7 +1,7 @@
 <template>
-  <el-carousel :interval="5000" type="card" height="200px" trigger="click">
-    <el-carousel-item v-for="item in carouselData" :key="item.targetId">
-      <img :src="item.pic" @click="imgClick(item)" />
+  <Carousel :carouselData="carouselData">
+    <template #carouselItem="item">
+      <img :src="item.pic" />
       <div
         class="text"
         :style="{
@@ -11,8 +11,8 @@
       >
         {{ item.typeTitle }}
       </div>
-    </el-carousel-item>
-  </el-carousel>
+    </template>
+  </Carousel>
 </template>
 
 <script lang="ts" setup>

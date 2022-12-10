@@ -3,11 +3,13 @@
     <HomeNavBar></HomeNavBar>
     <div class="container">
       <MenuList />
-      <router-view v-slot="{ Component }">
-        <keep-alive>
-          <component :is="Component" />
-        </keep-alive>
-      </router-view>
+      <div class="content">
+        <router-view v-slot="{ Component }">
+          <keep-alive>
+            <component :is="Component" />
+          </keep-alive>
+        </router-view>
+      </div>
     </div>
     <!--</el-header>
       <el-container>
@@ -68,7 +70,14 @@ ipcRenderer.on("login-send", (_, detail) => {
     display: flex;
     height: 100%;
     .menuList {
-      width: 200px;
+      min-width: 200px;
+    }
+    .content {
+      width: 100%;
+      padding: 25px;
+      overflow: scroll;
+      @include scrollbar();
+      position: relative;
     }
   }
 }

@@ -11,3 +11,15 @@ export function getRecommendData(data: any) {
     limit: data.limit,
   });
 }
+
+export function getPrivatecontent() {
+  return get("personalized/privatecontent");
+}
+
+export function geNewSong() {
+  return get("top/song");
+}
+
+export function getrcMV() {
+  return get("personalized/mv");
+}

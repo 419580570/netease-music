@@ -1,4 +1,5 @@
 @import "ui.scss";
+@import "handle.scss";
 
 html,
 body,
@@ -26,7 +27,7 @@ body {
   height: 100%;
   user-select: none;
   overflow: hidden;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 #app {
   height: 100%;

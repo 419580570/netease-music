@@ -1,4 +1,4 @@
-interface carouselData {
+export interface carouselData {
   pic: string;
   titleColor: string;
   url: string | null;
@@ -15,9 +15,47 @@ export interface recommendData {
   playCount: number;
 }
 
+export interface privateContentData {
+  name: string;
+  picUrl: string;
+}
+
+export interface newSongData {
+  name: string;
+  picUrl: string;
+}
+
+export type songDetail = {
+  id: number;
+  fee: number;
+  ar: {
+    alias: Array<any>;
+    id: number;
+    name: string;
+    tns: Array<any>;
+  }[];
+  alia: string[];
+  name: string;
+  picUrl: string;
+  plLevel: string;
+  mv: number;
+};
+
+export interface rcMVData {
+  artists: Array<{ id: number; name: string }>;
+  id: number | string;
+  name: string;
+  picUrl: string;
+  playCount: number;
+  copywriter: string;
+}
+
 export type homeDataType = {
   HomepageBanner: Array<carouselData>;
   HomepageBlockPlaylistRcmd: Array<recommendData>;
+  HomepagePrivateContent: Array<privateContentData>;
+  HomepageNewSong: Array<songDetail>;
+  HomepageRCMV: Array<rcMVData>;
 };
 
 export type playListDetailData = {

@@ -1,15 +1,97 @@
 @import "handle";
 .n-popover {
-  @include popover();
+  @include themeify {
+    background-color: themed("popover_bg") !important;
+    box-shadow: themed("popover_bs") !important;
+    &::-webkit-scrollbar {
+      width: 8px;
+      background-color: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: themed("popover_tb") !important;
+      border-radius: 5px;
+      &:hover {
+        background-color: themed("popover_tb_h") !important;
+      }
+    }
+  }
 }
 
 .n-navbar {
   @include font-color();
+  li:hover {
+    @include themeify {
+      color: themed("font-color-hover") !important;
+    }
+  }
   .currentRoute::after {
-    @include navbar-line();
+    @include red_custom();
   }
 }
 
 .n-button {
-  @include button()
+  @include themeify {
+    border-color: themed("button-default-bd");
+    color: themed("font-color");
+    &:hover {
+      background-color: themed("button-default-hb");
+    }
+    &.disabled {
+      background-color: themed("button-disabled-bg");
+      color: themed("button-disabled-color");
+      border-color: themed("button-disabled-bd") !important;
+      &:hover {
+        background-color: themed("button-disabled-bg");
+      }
+    }
+  }
+}
+.n-loading {
+  @include themeify {
+    .loadingLine {
+      stroke: themed("loading-color") !important;
+    }
+  }
+}
+
+.n-carousel {
+  img {
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+  }
+  .text {
+    text-align: center;
+    position: absolute;
+    height: 20px;
+    line-height: 18px;
+    right: 0px;
+    bottom: 0px;
+    padding: 0 10px;
+    font-size: 11px;
+    color: #fff;
+    border-top-left-radius: 6px;
+    border-bottom-right-radius: 8px;
+  }
+  @include themeify {
+    // background-color: rgb(160, 160, 160);
+    .button-group-item {
+      background-color: themed("carousel-button") !important;
+      &.active {
+        background-color: themed("red_custom") !important;
+      }
+    }
+  }
+}
+
+.n-list {
+  &-item__title {
+    @include font-color();
+    &:hover {
+      @include themeify {
+        color: themed("font-color-hover") !important;
+      }
+    }
+  }
 }

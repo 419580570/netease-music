@@ -11,7 +11,6 @@
         y2="6"
         rx="2"
         ry="2"
-        stroke="#000"
         stroke-width="2px"
         :style="{ '--i': item }"
       ></line>
@@ -25,10 +24,10 @@
 export default {
   name: "Loading",
   props: { isLoading: { type: Boolean, default: false } },
-  setup(props) {
-    return {
-      isLoading: props.isLoading,
-    };
-  },
+  // setup(props) {
+  //   return {
+  //     isLoading: props.isLoading,
+  //   };
+  // },
 };
 </script>

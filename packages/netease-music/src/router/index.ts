@@ -21,7 +21,7 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: "/discover/recommend",
             component: () =>
-              import("@/views/discover/childRoutes/recommend.vue"),
+              import("@/views/discover/childRoutes/recommend/index.vue"),
           },
           {
             path: "/discover/customized",
@@ -71,22 +71,26 @@ const routes: Array<RouteRecordRaw> = [
           },
         ],
       },
-      // {
-      //   path: "/broadcast",
-      //   component: Broadcast,
-      // },
-      // {
-      //   path: "/friend",
-      //   component: Friend,
-      // },
-      // {
-      //   path: "/video",
-      //   component: Video,
-      // },
-      // {
-      //   path: "/private",
-      //   component: Private,
-      // },
+      {
+        path: "/broadcast",
+        component: () => import("@/views/broadcast/index.vue")
+      },
+      {
+        path: "/video",
+        component: () => import("@/views/video/index.vue")
+      },
+      {
+        path: "/interest",
+        component: () => import("@/views/interest/index.vue")
+      },
+      {
+        path: "/live",
+        component: () => import("@/views/live/index.vue") 
+      },
+      {
+        path: "/private",
+        component: () => import("@/views/private/index.vue") 
+      },
       {
         path: "/playlist/:id",
         component: () => import("@/views/playlist/index.vue"),

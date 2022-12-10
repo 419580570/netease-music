@@ -29,6 +29,8 @@ export default function () {
       return num;
     } else if (numStr.length > numlength - 1) {
       return parseInt(num / 10000 + "") + "万";
+    } else if (numStr.length > 8) {
+      return parseInt(num / 10 ** 8 + "") + "亿";
     }
   };
 
@@ -61,29 +63,29 @@ export default function () {
   };
 
   const addStorage = (key: string, value: string) => {
-    return localStorage.setItem(key, value)
-  }
+    return localStorage.setItem(key, value);
+  };
 
   const getStorage = (key: string) => {
-    return localStorage.getItem(key) || ""
-  }
+    return localStorage.getItem(key) || "";
+  };
 
   const removeStorage = (key: string) => {
-    localStorage.removeItem(key)
-  }
+    localStorage.removeItem(key);
+  };
 
   const debounce = (fn: Function, timeout: number) => {
     let timer: NodeJS.Timeout | null;
-    return function() {
-      if(timer) {
-        clearTimeout(timer)
+    return function () {
+      if (timer) {
+        clearTimeout(timer);
       }
       timer = setTimeout(() => {
-        fn()
-        timer = null
+        fn();
+        timer = null;
       }, timeout);
-    }
-  }
+    };
+  };
 
   return {
     dataFormat,
@@ -96,6 +98,6 @@ export default function () {
     addStorage,
     getStorage,
     removeStorage,
-    debounce
+    debounce,
   };
 }
