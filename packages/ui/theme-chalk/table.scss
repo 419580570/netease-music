@@ -1,0 +1,46 @@
+@use "./mixins/config.scss" as *;
+
+.#{$namespace}-table {
+  line-height: 34px;
+  &-head {
+    .index {
+      display: inline-block;
+      width: 50px;
+    }
+    &__item {
+      padding: 0 5px;
+      display: inline-block;
+      font-size: 13px;
+    }
+  }
+  &-content {
+    &__line {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      .index {
+        width: 42px;
+        padding-right: 8px;
+        text-align: right;
+        font-size: 13.5px;
+      }
+      &:nth-child(2n - 1) {
+        background-color: rgb(250, 250, 250);
+      }
+      &.active {
+        background-color: rgb(229, 229, 229);
+      }
+      &:hover {
+        background-color: rgb(241, 242, 243);
+      }
+      &__item {
+        display: flex;
+        align-items: center;
+        padding: 0 5px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}

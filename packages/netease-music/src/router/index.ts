@@ -92,23 +92,23 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("@/views/private/index.vue") 
       },
       {
-        path: "/playlist/:id",
-        component: () => import("@/views/playlist/index.vue"),
+        path: "/songlist/:id",
+        component: () => import("@/views/songlist/index.vue"),
         children: [
           {
             path: "",
             name: "list",
-            component: () => import("@/views/playlist/list.vue"),
+            component: () => import("@/views/songlist/list.vue"),
           },
           {
             path: "",
             name: "comment",
-            component: () => import("@/views/playlist/comment.vue"),
+            component: () => import("@/views/songlist/comment.vue"),
           },
           {
             path: "",
             name: "collector",
-            component: () => import("@/views/playlist/collector.vue"),
+            component: () => import("@/views/songlist/collector.vue"),
           },
         ],
       },

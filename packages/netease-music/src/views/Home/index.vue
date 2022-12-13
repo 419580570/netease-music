@@ -4,11 +4,12 @@
     <div class="container">
       <MenuList />
       <div class="content">
-        <router-view v-slot="{ Component }">
+        <router-view> </router-view>
+        <!-- <router-view v-slot="{ Component }">
           <keep-alive>
             <component :is="Component" />
           </keep-alive>
-        </router-view>
+        </router-view> -->
       </div>
     </div>
     <!--</el-header>

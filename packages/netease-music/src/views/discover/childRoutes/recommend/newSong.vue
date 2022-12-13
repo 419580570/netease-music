@@ -6,12 +6,7 @@
         <PlayButton class="button"></PlayButton>
       </div>
       <div class="info">
-        <div class="name">
-          {{ item.name }}
-          <span class="desc" v-if="item.alia && item.alia.length">
-            （{{ item.alia[0] }}）
-          </span>
-        </div>
+        <NameAlia :name="item.name" :alia="item.alia"></NameAlia>
         <div class="q-ar">
           <SongTag class="q" :song="item"></SongTag>
           <NameGroup :ar="item.ar"></NameGroup>
@@ -26,6 +21,7 @@ import { songDetail } from "@/types";
 import PlayButton from "@/components/playButton/index.vue";
 import SongTag from "@/components/songTag/index.vue";
 import NameGroup from "@/components/nameGroup/index.vue";
+import NameAlia from "@/components/nameAlia/index.vue";
 
 defineProps<{ data: songDetail[] }>();
 </script>
@@ -72,17 +68,6 @@ defineProps<{ data: songDetail[] }>();
       height: 49px;
       width: calc(100% - 49px);
       box-sizing: border-box;
-      .name {
-        font-size: 13px;
-        margin-bottom: 2px;
-        @include font-color();
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        .desc {
-          @include font-color-desc();
-        }
-      }
       .q-ar > .q {
         margin-right: 7px;
       }

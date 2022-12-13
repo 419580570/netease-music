@@ -1,6 +1,18 @@
 <template>
-  <div>
-    <el-table
+  <div class="tableList">
+    <Loading :isLoading="isLoading">
+      <!-- 搜索 -->
+      <div class="search">
+        <Icon type="sousuo"></Icon>
+        <input type="text" v-model="searchValue" placeholder="搜索歌单音乐" />
+      </div>
+      <TableList
+        :data="data"
+        :format="format"
+        :lineIndex="true"
+      ></TableList>
+    </Loading>
+    <!-- <el-table
       style="width: 100%"
       stripe
       :border="false"
@@ -10,13 +22,13 @@
       <el-table-column label=" " type="index" width="38%"> </el-table-column>
       <el-table-column width="38%">
         <template #default="scope">
-          <!-- <span>{{islike}}</span> -->
+          <!- <span>{{islike}}</span> ->
           <i
             class="iconfont"
             :class="!scope.row.islike ? 'icon-dan-like-outline' : 'icon-xihuan'"
             style="color: var(--netease-color)"
           ></i>
-          <!-- <i class="iconfont icon-xihuan icon-dan-like-outline" @click="changeLike(scope)" v-else></i> -->
+          <!- <i class="iconfont icon-xihuan icon-dan-like-outline" @click="changeLike(scope)" v-else></i> ->
         </template>
       </el-table-column>
       <el-table-column label="音乐标题" width="510%">
@@ -53,20 +65,20 @@
         </template>
       </el-table-column>
       <el-table-column label="歌手" width="255%">
-        <!-- <template #default="scope">
+        <!- <template #default="scope">
           <span>{{ conName(scope.row.ar) }}</span>
-        </template> -->
+        </template> ->
       </el-table-column>
       <el-table-column label="专辑" prop="al.name" width="330%">
       </el-table-column>
       <el-table-column width="100%" label="时长">
-        <!-- <template #default="scope">
+        <!- <template #default="scope">
           <span style="color: rgb(155, 155, 155)">
             {{ playTime(scope.row) }}</span
           >
-        </template> -->
+        </template> ->
       </el-table-column>
-    </el-table>
+    </el-table> -->
   </div>
 </template>
 
@@ -136,38 +148,110 @@
 //     insertMusic,
 //   },
 // };
-let instance = getCurrentInstance();
-console.log(
-  instance!.parent!.parent!.parent!.exposed!.playlistDetailData._object
-    .playlistDetailData // ??????
-);
+import TableList from "@/components/tableList/index.vue";
+import { getAllTrack } from "@/network/methods";
+import { songDetail } from "@/types";
+import { extractFromSongDetail } from "@/util";
+// import { key } from "./project";
+const data = ref<songDetail[]>([]);
+const searchValue = ref("");
+const isLoading = ref(true);
+const route = useRoute();
+const format = [
+  { title: "操作", slotName: "operate", width: "50px" },
+  {
+    title: "标题",
+    slotName: "name",
+    width: "35.5%",
+    key: ["name", "alia", "plLevel", "fee", "mv"],
+  },
+  { title: "歌手", slotName: "singer", width: "16%", key: ["ar"] },
+  { title: "专辑", slotName: "album", width: "22.8%", key: ["al"] },
+  { title: "时间", slotName: "time", width: "40px", key: ["dt"] },
+];
+
+getAllTrack(route.params.id as string).then((res: any) => {
+  if (res.code === 200) {
+    data.value = extractFromSongDetail(res.songs, res.privileges);
+
+    isLoading.value = false;
+  }
+});
+
+// const filterData = computed(() => {
+//   const val = searchValue.value;
+//   if (!val) return data.value;
+//   const res = data.value.filter((item, index) => {
+//     let findRes = false;
+//     const _include = (item: any, key: string) => {
+//       // const index = item[key].include(val);
+//       return item[key].includes(val);
+//       // if (index === -1) return false;
+//       // item[key] = item[key].replace(
+//       //   item[key][index],
+//       //   `<span style='color: red'>${item[key][index]}</span>`
+//       // );
+//       // return true;
+//     };
+//     const _some = (arr: any) => {
+//       return arr.some(
+//         (item: any) =>
+//           _include(item, "name") ||
+//           (item.alias.length && _include(item.alias, "0"))
+//       );
+//     };
+//     if (
+//       _include(item, "name") ||
+//       (item.alia.length && _include(item.alia, "0")) ||
+//       _some(item.ar) ||
+//       _include(item.al, "name") ||
+//       (item.al!.tns.length && _include(item.al!.tns, "0"))
+//     ) {
+//       findRes = true;
+//     }
+//     return findRes;
+//   });
+//   return res;
+// });
 </script>
 
-<style scoped>
-.song-table {
-  position: relative;
-  top: -12px;
-  overflow: hidden;
-  margin-bottom: 80px;
-}
-
-.noShow {
-  display: none;
-}
-::v-deep .song-table .el-table__row {
-  font-size: 13px;
-  /* font-weight: 346; */
-  color: rgb(101, 101, 101);
-}
-::v-deep .song-table .el-table__body-wrapper::-webkit-scrollbar {
-  display: none;
-}
-.icon-dan-like-outline::before {
-  position: relative;
-  top: 2px;
-  color: rgb(194, 194, 194);
-}
-.icon-dan-like-outline:hover::before {
-  color: #000;
+<style scoped lang="scss">
+@import "@/assets/css/handle";
+.search {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: -40px;
+  right: 30px;
+  i {
+    position: absolute;
+    right: 5px;
+    padding-top: 2px;
+    @include font-color();
+    &:before {
+      font-size: 18px;
+    }
+  }
+  input {
+    outline: none;
+    border: 0;
+    border-radius: 30px;
+    letter-spacing: 0.3px;
+    width: 200px;
+    height: 23px;
+    margin-left: 8px;
+    padding-left: 11px;
+    padding-right: 10px;
+    box-sizing: border-box;
+    font-size: 12px;
+    @include hover-menuList();
+    @include font-color("caret-color");
+    &::-webkit-input-placeholder {
+      opacity: 0.5;
+      @include font-color-desc("caret-color");
+      // color: rgba(255, 255, 255, 0.4);
+    }
+  }
 }
 </style>

@@ -9,3 +9,4 @@ export * from "./notify";
 export * from "./loading";
 export * from "./carousel";
 export * from "./list";
+export * from "./table";

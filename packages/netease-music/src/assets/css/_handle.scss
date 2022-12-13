@@ -44,12 +44,12 @@
     background-color: themed("main-color") !important;
   }
 }
-@mixin font-color() {
+@mixin font-color($key: "color") {
   @include themeify {
-    color: themed("font-color") !important;
+    #{$key}: themed("font-color") !important;
     &.hover {
       &:hover {
-        color: themed("font-color-hover") !important;
+        #{$key}: themed("font-color-hover") !important;
       }
     }
   }
@@ -59,12 +59,32 @@
     color: themed("font-color-number") !important;
   }
 }
-@mixin font-color-desc() {
+@mixin font-color-desc($key: "color") {
   @include themeify {
-    color: themed("font-color-desc") !important;
+    #{$key}: themed("font-color-desc") !important;
     &.hover {
       &:hover {
-        color: themed("font-color-desc-hover") !important;
+        #{$key}: themed("font-color-desc-hover") !important;
+      }
+    }
+  }
+}
+@mixin font-color-blue($key: "color") {
+  @include themeify {
+    #{$key}: themed("font-color-blue") !important;
+    &.hover {
+      &:hover {
+        #{$key}: themed("font-color-blue-hover") !important;
+      }
+    }
+  }
+}
+@mixin font-color-dark($key: "color") {
+  @include themeify {
+    #{$key}: themed("font-color-dark") !important;
+    &.hover {
+      &:hover {
+        #{$key}: themed("font-color-dark-hover") !important;
       }
     }
   }
@@ -84,9 +104,9 @@
     background-color: themed("hover-default") !important;
   }
 }
-@mixin hover-menuList() {
+@mixin hover-menuList($key: "background-color") {
   @include themeify {
-    background-color: themed("hover-menuList") !important;
+    #{$key}: themed("hover-menuList") !important;
   }
 }
 @mixin split-line($key: "background-color") {

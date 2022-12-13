@@ -24,6 +24,7 @@
 export default {
   name: "Loading",
   props: { isLoading: { type: Boolean, default: false } },
+  inheritAttrs: false,
   // setup(props) {
   //   return {
   //     isLoading: props.isLoading,

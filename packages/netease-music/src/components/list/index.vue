@@ -45,7 +45,7 @@ defineProps(["playButton"]);
 <style scoped lang="scss">
 .n-list {
   :deep(.n-list-item__content) {
-    border-radius: 5px;
+    border-radius: 6px;
     &.fall:hover {
       .playcount {
         opacity: 0;

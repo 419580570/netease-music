@@ -95,3 +95,26 @@
     }
   }
 }
+
+.n-table {
+  .n-table-head__item {
+    @include font-color-dark();
+  }
+  &-content__line {
+    &:nth-child(2n - 1) {
+      @include themeify {
+        background-color: themed("table-stripe") !important;
+      }
+    }
+    &.active {
+      @include themeify {
+        background-color: themed("table-active") !important;
+      }
+    }
+    &:hover {
+      @include themeify {
+        background-color: themed("table-hover") !important;
+      }
+    }
+  }
+}

@@ -1,6 +1,10 @@
 <template>
   <img v-bind="$attrs" ref="ImgLoad" v-show="!isLoad" />
-  <img src="@/assets/img/placeholder.png" v-show="isLoad" :class="$attrs.class" />
+  <img
+    src="@/assets/img/placeholder.png"
+    v-show="isLoad"
+    :class="$attrs.class"
+  />
 </template>
 
 <script lang="ts" setup>

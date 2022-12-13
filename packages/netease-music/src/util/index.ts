@@ -3,21 +3,22 @@ import { songDetail } from "@/types";
 export * from "./electron";
 export * from "./login";
 
-export function extractFromSongDetail(song: any): songDetail[] {
-  return song.songs.map(
+export function extractFromSongDetail(
+  song: any,
+  privileges: any
+): songDetail[] {
+  return song.map(
     (item: any, index: number): songDetail => ({
       id: item.id,
       fee: item.fee,
       ar: item.ar,
+      al: item.al,
+      dt: item.dt,
       alia: item.alia,
       name: item.name,
       picUrl: item.al.picUrl,
-      plLevel: song.privileges[index].plLevel,
+      plLevel: privileges[index].plLevel,
       mv: item.mv,
-      // sq: item.sq,
-      // h: item.h,
-      // m: item.m,
-      // l: item.l,
     })
   );
 }

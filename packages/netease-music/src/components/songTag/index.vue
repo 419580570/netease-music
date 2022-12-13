@@ -1,5 +1,5 @@
 <template>
-  <div class="content" v-if="tags.length">
+  <div class="content" v-if="tags.length" v-bind="$attrs">
     <span :class="item" v-for="item in tags">{{ item }}</span>
   </div>
 </template>
@@ -26,7 +26,6 @@ const tags = computed(() => {
     res.push("MV");
   }
 
-  // console.log(res);
   return res;
 });
 </script>
@@ -65,6 +64,7 @@ const tags = computed(() => {
     --color: rgb(254, 112, 59);
   }
   .MV {
+    cursor: pointer;
     &::after {
       content: "▶";
       font-size: 5.5px;

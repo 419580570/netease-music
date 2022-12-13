@@ -1,6 +1,7 @@
 <template>
-  <span class="play-button"><Icon type="you"></Icon></span>
+  <span class="play-button" v-bind="$attrs"><Icon type="you"></Icon></span>
 </template>
+
 <style scoped lang="scss">
 .play-button {
   width: 30px;

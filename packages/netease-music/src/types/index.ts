@@ -34,6 +34,15 @@ export type songDetail = {
     name: string;
     tns: Array<any>;
   }[];
+  al?: {
+    id: number;
+    name: string;
+    pic: number;
+    picUrl: string;
+    pic_str: string;
+    tns: Array<string>;
+  };
+  dt?: number;
   alia: string[];
   name: string;
   picUrl: string;
@@ -58,7 +67,7 @@ export type homeDataType = {
   HomepageRCMV: Array<rcMVData>;
 };
 
-export type playListDetailData = {
+export type songListDetailData = {
   coverImgUrl: string;
   name: string;
   createTime: number;
@@ -68,7 +77,6 @@ export type playListDetailData = {
   playCount: number;
   description: string;
   tags: Array<string>;
-  tracks: Array<any>;
   subscribers: Array<any>;
   creator: { avatarUrl: string; nickname: string };
 };

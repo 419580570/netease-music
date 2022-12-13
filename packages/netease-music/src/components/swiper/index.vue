@@ -1,5 +1,5 @@
 <template>
-  <Carousel :carouselData="carouselData">
+  <Carousel :carouselData="carouselData" v-bind="$attrs">
     <template #carouselItem="item">
       <img :src="item.pic" />
       <div

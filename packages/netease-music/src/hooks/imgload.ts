@@ -6,7 +6,6 @@ export default function useImgLoad(ImgLoad: Ref<HTMLElement | undefined>) {
   onMounted(() => {
     ImgLoad.value!.onload = () => {
       isLoad.value = false;
-      console.log("加载完成");
     };
   });
 

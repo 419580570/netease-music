@@ -8,6 +8,7 @@ import { NNotify } from "ui/components/notify";
 import { NLoading } from "ui/components/loading";
 import { NCarousel } from "ui/components/carousel";
 import { NList } from "ui/components/list";
+import { NTable } from "ui/components/table";
 import type { Plugin } from "vue";
 
 export default [
@@ -21,4 +22,5 @@ export default [
   NLoading,
   NCarousel,
   NList,
+  NTable,
 ] as Plugin[];
