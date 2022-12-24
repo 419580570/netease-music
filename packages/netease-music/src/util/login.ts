@@ -1,5 +1,5 @@
-import { userProfileStore } from "@/store/index";
-const profileStore = userProfileStore();
+import { useProfileStore } from "@/store/index";
+const profileStore = useProfileStore();
 export function login(profile: any) {
   let _profile = profile.profile;
   delete profile.profile;

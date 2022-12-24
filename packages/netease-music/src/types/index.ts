@@ -26,6 +26,7 @@ export interface newSongData {
 }
 
 export type songDetail = {
+  index: number;
   id: number;
   fee: number;
   ar: {
@@ -43,11 +44,17 @@ export type songDetail = {
     tns: Array<string>;
   };
   dt?: number;
+  from?: string;
   alia: string[];
   name: string;
   picUrl: string;
   plLevel: string;
   mv: number;
+  noCopyrightRcmd: {
+    type: number;
+    typeDesc: string;
+    songId: any;
+  } | null;
 };
 
 export interface rcMVData {

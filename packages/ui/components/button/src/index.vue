@@ -3,8 +3,9 @@
     class="n-button"
     :class="{ disabled: disabled, 'red-theme': theme === 'ofRed' }"
     :style="{ fontSize: size }"
+    @click="handleClick"
   >
-    <slot></slot>
+    <span class="n-button__content"><slot></slot></span>
   </span>
 </template>
 
@@ -22,8 +23,17 @@ export default {
     },
     theme: {
       type: String,
-      default: "default"
-    }
+      default: "default",
+    },
+  },
+  setup(props, { emit }) {
+    const handleClick = () => {
+      emit("handleClick");
+    };
+
+    return {
+      handleClick,
+    };
   },
 };
 </script>

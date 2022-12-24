@@ -94,7 +94,7 @@ Promise.allSettled(promises).then((results: any) => {
         homeData.HomepageBanner =
           result.value.data.blocks[0].extInfo.banners.map((item: any) => {
             return {
-              pic: item.imageUrl,
+              pic: item.pic || item.imageUrl,
               titleColor: item.titleColor,
               url: item.url,
               encodeId: item.encodeId,
@@ -135,7 +135,10 @@ Promise.allSettled(promises).then((results: any) => {
         const data = result.value.data.slice(0, 12).map((item: any) => item.id);
         getSongDetail(data).then((res: any) => {
           if (res.code === 200) {
-            homeData.HomepageNewSong = extractFromSongDetail(res.songs, res.privileges);
+            homeData.HomepageNewSong = extractFromSongDetail(
+              res.songs,
+              res.privileges
+            );
           }
         });
         break;
@@ -156,7 +159,7 @@ Promise.allSettled(promises).then((results: any) => {
 });
 
 function toDetail(item: any) {
-  console.log(item)
+  console.log(item);
   router.push(`/songlist/${item.id}`);
 }
 </script>
@@ -206,7 +209,7 @@ function toDetail(item: any) {
       }
     }
     &:last-child {
-      padding-bottom: 100px;
+      margin-bottom: 100px;
     }
     .mv-list {
       :deep(.n-list-item) {

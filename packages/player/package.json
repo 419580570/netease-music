@@ -1,12 +1,28 @@
 {
-  "name": "player",
+  "name": "nplayer",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "仿网易云音乐播放器",
+  "main": "dist/nplayer.js",
+  "private": false,
+  "type": "module",
+  "author": "zc",
+  "license": "ISC",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite --mode dev",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "vue-tsc && vite build --mode build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "keywords": [
+    "player",
+    "neatease-music",
+    "netease",
+    "music",
+    "nplayer"
+  ],
+  "dependencies": {
+    "vue": "^3.2.45"
+  },
+  "devDependencies": {
+    "vite-plugin-libcss": "^1.0.5"
+  }
 }

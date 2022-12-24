@@ -1,11 +1,19 @@
 <template>
   <div class="center">
     <!-- 后退按钮 -->
-    <div class="button no-drag">
+    <div
+      class="button no-drag"
+      :class="{ disable: !prev }"
+      @click="handlePrev()"
+    >
       <Icon type="forward" :size="12"></Icon>
     </div>
     <!-- 前进按钮 -->
-    <div class="button no-drag">
+    <div
+      class="button no-drag"
+      :class="{ disable: !next }"
+      @click="handleNext()"
+    >
       <Icon type="prev" :size="12"></Icon>
     </div>
 
@@ -39,6 +47,10 @@ import SearchPop from "./search.vue";
 const SearchPopRef = ref<InstanceType<typeof SearchPop> | null>(null);
 const searchValue = ref("");
 const searchDefault = ref("");
+console.log(window.history.state);
+const prev = ref(window.history.state.back !== "/home");
+const next = ref(!!window.history.state.forward);
+const router = useRouter();
 
 getSearchDefault().then((res: any) => {
   searchDefault.value = res.data.showKeyword;
@@ -46,11 +58,48 @@ getSearchDefault().then((res: any) => {
 
 const addHistory = (e: Event) => {
   const value = (e.target as HTMLInputElement).value;
+  if (!value) return;
   const list = SearchPopRef.value?.historyList;
   if (list.indexOf(value) == -1) {
     list.unshift(value);
   }
 };
+
+const handlePrev = () => {
+  if (window.history.state.position <= 1) return;
+  prev.value = true;
+  next.value = true;
+  router.go(-1);
+  setTimeout(() => {
+    if (window.history.state.position <= 1) {
+      prev.value = false;
+    }
+  }, 500);
+};
+const handleNext = () => {
+  if (!window.history.state.forward) return;
+  prev.value = true;
+  next.value = true;
+  router.go(1);
+  setTimeout(() => {
+    if (!window.history.state.forward) {
+      next.value = false;
+    }
+  }, 500);
+};
+
+watch(router.currentRoute, () => {
+  if (window.history.state.position <= 1) {
+    prev.value = false;
+  } else {
+    prev.value = true;
+  }
+  if (!window.history.state.forward) {
+    next.value = false;
+  } else {
+    next.value = true;
+  }
+});
 </script>
 
 <style scoped lang="scss">
@@ -73,7 +122,10 @@ const addHistory = (e: Event) => {
     justify-content: center;
     align-items: center;
     font-weight: 400;
-    color: $font-color;
+    color: rgb(255, 255, 255, 0.7);
+    &.disable {
+      color: rgb(255, 255, 255, 0.2);
+    }
   }
   .search {
     position: relative;
@@ -105,7 +157,7 @@ const addHistory = (e: Event) => {
       font-size: 12px;
       caret-color: #fff;
       &::-webkit-input-placeholder {
-        color: rgba(255, 255, 255, .4);
+        color: rgba(255, 255, 255, 0.4);
       }
     }
   }

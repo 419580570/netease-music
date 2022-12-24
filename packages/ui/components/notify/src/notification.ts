@@ -6,6 +6,7 @@ export const notifyProps = {
   offsetX: { type: Number },
   offsetY: { type: Number },
   appendTo: { type: String },
+  style: { type: Object, default: {} },
 };
 
 export type NotifyProps = ExtractPropTypes<typeof notifyProps>;

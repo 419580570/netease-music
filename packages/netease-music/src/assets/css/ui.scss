@@ -17,6 +17,26 @@
   }
 }
 
+.n-dialog {
+  &-content {
+    @include themeify {
+      background-color: themed("popover_bg") !important;
+      box-shadow: themed("popover_bs") !important;
+    }
+    .closeButton {
+      span {
+        @include themeify {
+          background-color: themed("font-color-dark") !important;
+        }
+      }
+      &:hover > span {
+        @include themeify {
+          background-color: themed("font-color-dark-hover") !important;
+        }
+      }
+    }
+  }
+}
 .n-navbar {
   @include font-color();
   li:hover {
@@ -43,6 +63,10 @@
       &:hover {
         background-color: themed("button-disabled-bg");
       }
+    }
+    &.red-theme {
+      background-color: themed("red_custom") !important;
+      border-color: themed("red_custom") !important;
     }
   }
 }
@@ -103,17 +127,55 @@
   &-content__line {
     &:nth-child(2n - 1) {
       @include themeify {
-        background-color: themed("table-stripe") !important;
+        background-color: themed("table-stripe");
       }
     }
     &.active {
       @include themeify {
-        background-color: themed("table-active") !important;
+        background-color: themed("table-active");
       }
     }
     &:hover {
       @include themeify {
-        background-color: themed("table-hover") !important;
+        background-color: themed("table-hover");
+      }
+    }
+  }
+}
+
+.n-checkbox {
+  &__inner {
+    @include themeify {
+      border-color: themed("button-disabled-bd");
+    }
+    &.is-checked {
+      @include themeify {
+        background-color: themed("red_custom") !important;
+        border-color: themed("red_custom") !important;
+      }
+    }
+  }
+  &__label {
+    @include font-color-dark();
+  }
+}
+
+.n-pagination {
+  &__item {
+    @include themeify {
+      border-color: themed("table-active");
+    }
+    @include font-color-dark();
+    &.next,
+    &.prev,
+    &:not(.active):hover {
+      @include themeify {
+        background-color: themed("pagination-disabled-bg");
+      }
+    }
+    &.disabled {
+      @include themeify {
+        color: themed("pagination-disabled-co");
       }
     }
   }

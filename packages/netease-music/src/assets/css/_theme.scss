@@ -5,6 +5,7 @@ $themes: (
   ),
   coDark: (
     basic: rgb(33, 33, 36),
+    red_custom: rgb(236, 65, 65),
     navbar-stripe:
       linear-gradient(
         to right,
@@ -23,7 +24,7 @@ $themes: (
     font-color-blue-hover: rgb(179, 206, 229),
     font-color-dark: rgb(135, 135, 135),
     font-color-dark-hover: rgb(180, 180, 180),
-    red_custom: rgb(236, 65, 65),
+    font-color-disable: rgb(102, 102, 102),
     input-bg: rgb(43, 43, 46),
     hover-default: rgb(66, 66, 66),
     hover-menuList: rgb(51, 51, 51),
@@ -42,6 +43,11 @@ $themes: (
     table-stripe: rgb(47, 47, 47),
     table-hover: rgb(55, 55, 55),
     table-active: rgb(65, 65, 65),
+    pagination-disabled-bg: rgb(57, 57, 57),
+    pagination-disabled-co: rgb(87, 87, 87),
+    player-bg: rgb(33, 33, 36),
+    play-button-bg: rgb(42, 42, 45),
+    play-progress-do: rgb(77, 77, 79),
   ),
   default: (
     basic: var(--custom-theme),
@@ -58,6 +64,7 @@ $themes: (
     font-color-blue-hover: rgb(11, 88, 176),
     font-color-dark: rgb(103, 103, 103),
     font-color-dark-hover: rgb(52, 52, 53),
+    font-color-disable: rgb(159, 159, 159),
     red_custom: var(--custom-theme),
     input-bg: rgba(0, 0, 0, 0.06),
     hover-default: rgb(240, 241, 242),
@@ -72,5 +79,10 @@ $themes: (
     table-stripe: rgb(250, 250, 250),
     table-hover: rgb(241, 242, 243),
     table-active: rgb(229, 229, 229),
+    pagination-disabled-bg: rgb(255, 255, 255),
+    pagination-disabled-co: rgb(209, 209, 209),
+    player-bg: rgb(255, 255, 255),
+    play-button-bg: rgb(245, 245, 245),
+    play-progress-do: rgb(206, 206, 206),
   ),
 );

@@ -20,7 +20,7 @@
             >
           </div>
           <div class="button">
-            <play-all-button @showDialog="showDialog"></play-all-button>
+            <play-all-button @add-all="addAll"></play-all-button>
             <Button class="buttonitem">
               <Icon type="xinjianwenjian"></Icon>
               <span
@@ -76,13 +76,10 @@
           :enlargeActive="true"
           @NavbarClick="handleClick"
         ></Navbar>
-        <router-view v-slot="{ Component }">
-          <keep-alive>
-            <component :is="Component" />
-          </keep-alive>
-        </router-view>
+        <keep-alive>
+          <component :is="activeLabel" ref="songlist" :id="route.params.id" />
+        </keep-alive>
       </div>
-      <!-- <Dialog ref="dialog" @addplaylist="addplaylist"></Dialog> -->
     </div>
   </Loading>
 </template>
@@ -172,15 +169,23 @@
 // };
 
 import { getSongListDetail } from "@/network/methods";
-import { songListDetailData } from "@/types/index";
+import { songDetail, songListDetailData } from "@/types/index";
+import { useMusicStore } from "@/store/index";
 import { computed } from "vue";
 import NameGroup from "@/components/nameGroup/index.vue";
 import PlayAllButton from "@/components/playAllButton/index.vue";
+import List from "./list.vue";
+import Comment from "./comment.vue";
+import Collector from "./collector.vue";
 import util from "@/hooks/util";
 // import { key } from "./project";
 
 const route = useRoute();
 const router = useRouter();
+const oldId = ref("");
+const activeLabel = shallowRef<any>(List);
+const musicStore = useMusicStore();
+const songlist = ref<{ list: songDetail[] }>();
 const { SimpleDataFormat, simpNum } = util();
 let data = reactive<{
   isfold: boolean;
@@ -209,30 +214,43 @@ let data = reactive<{
   },
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-getSongListDetail(route.params.id as string).then((res: any) => {
-  const playlist = res.playlist;
-  playlist.tracks.forEach((item: any, index: number) => {
-    item.plLevel = res.privileges[index].plLevel;
+const getData = () => {
+  const id = route.params.id;
+  if (!id || id === oldId.value) {
+    nextTick(() => (data.isLoading = false));
+    return;
+  }
+  oldId.value = id as string;
+  data.isLoading = true;
+  getSongListDetail(id as string).then((res: any) => {
+    const playlist = res.playlist;
+    playlist.tracks.forEach((item: any, index: number) => {
+      item.plLevel = res.privileges[index].plLevel;
+    });
+    data.playlistDetailData = {
+      coverImgUrl: playlist.coverImgUrl,
+      name: playlist.name,
+      createTime: playlist.createTime,
+      subscribedCount: playlist.subscribedCount,
+      shareCount: playlist.shareCount,
+      trackCount: playlist.trackCount,
+      playCount: playlist.playCount,
+      description: playlist.description,
+      subscribers: playlist.subscribers,
+      tags: playlist.tags,
+      creator: {
+        avatarUrl: playlist.creator.avatarUrl,
+        nickname: playlist.creator.nickname,
+      },
+    };
+    data.tabList[1] = `评论(${playlist.commentCount})`;
+    data.isLoading = false;
   });
-  data.playlistDetailData = {
-    coverImgUrl: playlist.coverImgUrl,
-    name: playlist.name,
-    createTime: playlist.createTime,
-    subscribedCount: playlist.subscribedCount,
-    shareCount: playlist.shareCount,
-    trackCount: playlist.trackCount,
-    playCount: playlist.playCount,
-    description: playlist.description,
-    subscribers: playlist.subscribers,
-    tags: playlist.tags,
-    creator: {
-      avatarUrl: playlist.creator.avatarUrl,
-      nickname: playlist.creator.nickname,
-    },
-  };
-  data.tabList[1] = `评论(${playlist.commentCount})`;
-  data.isLoading = false;
+};
+
+onActivated(() => {
+  console.log("activated");
+  getData();
 });
 
 const getTags = computed(() => {
@@ -244,26 +262,24 @@ const getTags = computed(() => {
 
 // provide(key, filterData);
 
-const showDialog = () => {
-  // this.$refs.dialog.dialogVisible = true;
+const addAll = (bool: boolean) => {
+  /* 替换播放列表 */
+  if (!songlist.value) return;
+  bool
+    ? musicStore.replacePlaylist(songlist.value.list)
+    : musicStore.addPlayList(songlist.value.list);
 };
 
 const handleClick = (index: number) => {
   switch (index) {
     case 0:
-      router.push({
-        name: "list",
-      });
+      activeLabel.value = List;
       break;
     case 1:
-      router.push({
-        name: "comment",
-      });
+      activeLabel.value = Comment;
       break;
     case 2:
-      router.push({
-        name: "collector",
-      });
+      activeLabel.value = Collector;
       break;
   }
 };
@@ -416,7 +432,6 @@ const { isfold, isLoading, playlistDetailData, tabList } = toRefs(data);
   }
   .bottom {
     margin-top: 35px;
-    margin-bottom: 50px;
     position: relative;
     .n-navbar {
       margin-bottom: 19px;

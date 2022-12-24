@@ -10,3 +10,6 @@ export * from "./loading";
 export * from "./carousel";
 export * from "./list";
 export * from "./table";
+export * from "./checkbox";
+export * from "./radio";
+export * from "./pagination";

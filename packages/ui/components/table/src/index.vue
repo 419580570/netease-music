@@ -3,6 +3,7 @@ import { h, ref } from "vue";
 
 export default {
   name: "Table",
+  emits: ["dbclick"],
   props: {
     data: Array,
     format: Array<{
@@ -15,8 +16,16 @@ export default {
       type: Boolean,
       default: () => false,
     },
+    showTitle: {
+      type: Boolean,
+      default: () => false,
+    },
+    currentPlay: {
+      type: Number,
+      default: 0,
+    },
   },
-  setup(props, { slots }) {
+  setup(props, { slots, emit }) {
     if (!props.data || !slots) return () => null;
     const activeLine = ref(0);
     const lineClick = id => {
@@ -38,21 +47,27 @@ export default {
       }
       return `${index}`;
     };
+
+    const lineDblclick = item => {
+      emit("dbclick", item);
+    };
+
     return () =>
       h("div", { class: "n-table" }, [
-        h("div", { class: "n-table-head" }, [
-          props.lineIndex && h("span", { class: "index" }),
-          ...props.format?.map(format =>
-            h(
-              "span",
-              {
-                class: "n-table-head__item",
-                style: { width: format.width },
-              },
-              format.title
-            )
-          )!,
-        ]),
+        props.showTitle &&
+          h("div", { class: "n-table-head" }, [
+            props.lineIndex && h("span", { class: "index" }),
+            ...props.format?.map(format =>
+              h(
+                "span",
+                {
+                  class: "n-table-head__item",
+                  style: { width: format.width },
+                },
+                format.title
+              )
+            )!,
+          ]),
         h(
           "div",
           { class: "n-table-content" },
@@ -62,12 +77,14 @@ export default {
               {
                 class: `n-table-content__line${
                   item.id === activeLine.value ? " active" : ""
-                }`,
+                }${props.currentPlay === item.id ? " playing" : ""}`,
                 onClick: () => lineClick(item.id),
+                onDblclick: () => lineDblclick(item),
+                key: index,
               },
               [
                 props.lineIndex &&
-                  h("span", { class: "index" }, unifiedIndex(index + 1)),
+                  h("span", { class: "index" }, unifiedIndex(item.index + 1)),
                 ...props.format?.map(format =>
                   h(
                     "div",

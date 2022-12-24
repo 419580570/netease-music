@@ -24,12 +24,11 @@
 
 <script lang="ts" setup>
 // import Mdialog from "@/components/dialog/dialog.vue";
-import store from "@/store/index";
+import { useProfileStore } from "@/store/index";
 import { getQrCode, checkLogin, getUserDetail } from "@/network/methods";
 import { ipcRenderer } from "electron";
 import { useRouter } from "vue-router";
 
-const { userProfileStore } = store;
 interface login {
   qrImg: string;
   key: any;
@@ -47,7 +46,7 @@ let data = reactive<login>({
 let show = ref<boolean>(true);
 let key: string | null = ""; //二维码登录使用的key
 const router = useRouter();
-const profileStore = userProfileStore();
+const profileStore = useProfileStore();
 
 /* 监听show的变化 */
 watchEffect(() => {
@@ -93,13 +92,11 @@ const changeLogin = () => {
   router.push("/login/phonenumber");
 };
 onActivated(() => {
-  console.log("active")
   show.value = true;
-})
+});
 onDeactivated(() => {
   show.value = false;
-  console.log("deactive")
-})
+});
 
 const closeDialog = () => {
   ipcRenderer.send("dialog-close");

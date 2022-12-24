@@ -1,0 +1,58 @@
+@use "./mixins/config.scss" as *;
+
+.#{$namespace}-checkbox {
+  label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  &__input {
+    white-space: nowrap;
+    cursor: pointer;
+    outline: none;
+    display: inline-flex;
+    position: relative;
+  }
+  &__original {
+    opacity: 0;
+    outline: none;
+    position: absolute;
+    margin: 0;
+    width: 0;
+    height: 0;
+    z-index: -1;
+  }
+  &__inner {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    position: relative;
+    border: 1px solid;
+    border-radius: 3px;
+    box-sizing: border-box;
+    border-color: rgb(204, 204, 204);
+    &::after {
+      content: "✔";
+      opacity: 0;
+      color: #fff;
+      font-size: 13px;
+      position: absolute;
+      top: -3px;
+      left: 2px;
+    }
+    &.is-checked {
+      background-color: rgb(256, 65, 65);
+      border-color: rgb(256, 65, 65);
+      &::after {
+        opacity: 1;
+      }
+    }
+  }
+  &__label {
+    display: inline-block;
+    padding-left: 8px;
+    line-height: 1;
+    font-size: 12px;
+  }
+}

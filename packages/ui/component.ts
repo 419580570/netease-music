@@ -9,6 +9,9 @@ import { NLoading } from "ui/components/loading";
 import { NCarousel } from "ui/components/carousel";
 import { NList } from "ui/components/list";
 import { NTable } from "ui/components/table";
+import { NCheckbox } from "ui/components/checkbox";
+import { NRadio } from "ui/components/radio";
+import { NPagination } from "ui/components/pagination";
 import type { Plugin } from "vue";
 
 export default [
@@ -23,4 +26,7 @@ export default [
   NCarousel,
   NList,
   NTable,
+  NCheckbox,
+  NRadio,
+  NPagination,
 ] as Plugin[];

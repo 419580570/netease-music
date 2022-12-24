@@ -1,6 +1,11 @@
 <template>
   <div class="content" v-if="tags.length" v-bind="$attrs">
-    <span :class="item" v-for="item in tags">{{ item }}</span>
+    <span
+      :class="item"
+      v-for="item in tags"
+      :data-desc="song.noCopyrightRcmd?.typeDesc"
+      >{{ item }}</span
+    >
   </div>
 </template>
 
@@ -11,6 +16,10 @@ const props = defineProps<{ song: songDetail }>();
 
 const tags = computed(() => {
   const res = [];
+  if (props.song.noCopyrightRcmd) {
+    res.push("无音源");
+    return res;
+  }
   if (props.song.fee === 1) {
     res.push("VIP");
   }
@@ -73,6 +82,21 @@ const tags = computed(() => {
       margin-left: 0.5px;
       position: relative;
       bottom: 1.5px;
+    }
+  }
+  .无音源 {
+    position: relative;
+    text-shadow: none;
+    box-shadow: none;
+    padding: 1px;
+    @include themeify {
+      color: themed("font-color-disable");
+      border: 1px solid themed("font-color-disable");
+    }
+    &::after {
+      content: attr(data-desc);
+      position: absolute;
+      margin-left: 3px;
     }
   }
 }

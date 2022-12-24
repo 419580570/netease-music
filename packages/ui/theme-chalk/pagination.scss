@@ -1,0 +1,41 @@
+@use "./mixins/config.scss" as *;
+
+.#{$namespace}-pagination {
+  display: flex;
+  justify-content: center;
+  &__item {
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    width: 23px;
+    height: 23px;
+    line-height: 23px;
+    border: 0.5px solid rgb(229, 229, 229);
+    border-radius: 4px;
+    margin-right: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    text-align: center;
+    &:hover {
+      background-color: rgb(245, 245, 245);
+    }
+    &.active {
+      background-color: rgb(236, 65, 65);
+      color: #fff;
+      border-color: rgb(236, 65, 65);
+    }
+    &.ellipsis {
+      pointer-events: none;
+    }
+    &.next {
+      margin-right: 0px;
+    }
+    &.prev {
+      line-height: 21px;
+    }
+    &.disabled {
+      pointer-events: none;
+      color: rgb(209, 209, 209);
+    }
+  }
+}

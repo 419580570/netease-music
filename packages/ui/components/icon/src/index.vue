@@ -20,11 +20,8 @@ export default defineComponent({
       };
     });
 
-    const type = props.type
-
     return {
       style,
-      type
     };
   },
 });

@@ -92,9 +92,10 @@ onMounted(() => {
   height: 100%;
   padding: 12px 2px 0 12px;
   box-sizing: border-box;
-  border-right: 1px solid rgb(225, 225, 225);
+  border-right: 1px solid;
+  overflow: auto;
   @include split-line("border-color");
-  // background-color: red;
+  @include scrollbar();
   .menuListGroup {
     display: flex;
     flex-direction: column;

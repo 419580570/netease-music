@@ -1,11 +1,12 @@
 @use "../mixins/mixins.scss" as *;
+/* CDN 服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
 @font-face {
   font-family: "iconfont"; /* Project id 2526523 */
-  src: url("//at.alicdn.com/t/c/font_2526523_pfq3pyx2iag.woff2?t=1669977754143")
+  src: url("//at.alicdn.com/t/c/font_2526523_3ctqt31k8pk.woff2?t=1671892648518")
       format("woff2"),
-    url("//at.alicdn.com/t/c/font_2526523_pfq3pyx2iag.woff?t=1669977754143")
+    url("//at.alicdn.com/t/c/font_2526523_3ctqt31k8pk.woff?t=1671892648518")
       format("woff"),
-    url("//at.alicdn.com/t/c/font_2526523_pfq3pyx2iag.ttf?t=1669977754143")
+    url("//at.alicdn.com/t/c/font_2526523_3ctqt31k8pk.ttf?t=1671892648518")
       format("truetype");
 }
 
@@ -19,6 +20,46 @@
 
   &:before {
     font-size: inherit;
+  }
+
+  &.lianjie:before {
+    content: "\e61e";
+  }
+
+  &.suijibofang:before {
+    content: "\e622";
+  }
+
+  &.liebiaoxunhuan:before {
+    content: "\e66c";
+  }
+
+  &.danquxunhuan:before {
+    content: "\e66d";
+  }
+
+  &.bofang:before {
+    content: "\e62b";
+  }
+
+  &.shunxubofang_:before {
+    content: "\ea83";
+  }
+
+  &.shangyishou:before {
+    content: "\e63d";
+  }
+
+  &.xiayishou:before {
+    content: "\e63e";
+  }
+
+  &.shunxubofang:before {
+    content: "\ea84";
+  }
+
+  &.zanting:before {
+    content: "\e628";
   }
 
   &.xihuan-fill:before {
@@ -211,10 +252,6 @@
     content: "\e607";
   }
 
-  &.lianjie:before {
-    content: "\e606";
-  }
-
   &.mv:before {
     content: "\e639";
   }
@@ -255,16 +292,8 @@
     content: "\e605";
   }
 
-  &.suijibofang:before {
-    content: "\e67d";
-  }
-
   &.biao-:before {
     content: "\e62b";
-  }
-
-  &.xiayishou:before {
-    content: "\e60d";
   }
 
   &.ci:before {
@@ -275,13 +304,13 @@
     content: "\e6ce";
   }
 
-  &.danquxunhuan_:before {
-    content: "\ebe9";
-  }
+  // &.danquxunhuan_:before {
+  //   content: "\ebe9";
+  // }
 
-  &.danquxunhuan:before {
-    content: "\e602";
-  }
+  // &.danquxunhuan:before {
+  //   content: "\e602";
+  // }
 
   &.xiayishou-left:before {
     content: "\e603";

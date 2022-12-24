@@ -7,8 +7,10 @@ export function getSongListDetail(id: string) {
   });
 }
 
-export function getAllTrack(id: string) {
+export function getAllTrack(id: string, limit?: number, offset?: number) {
   return get("playlist/track/all", {
     id,
+    limit,
+    offset,
   });
 }

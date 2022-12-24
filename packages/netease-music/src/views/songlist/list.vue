@@ -10,75 +10,30 @@
         :data="data"
         :format="format"
         :lineIndex="true"
+        :showTitle="true"
+        @handleDbclick="handleDbclick"
       ></TableList>
     </Loading>
-    <!-- <el-table
-      style="width: 100%"
-      stripe
-      :border="false"
-      size="mini"
-      class="song-table"
-    >
-      <el-table-column label=" " type="index" width="38%"> </el-table-column>
-      <el-table-column width="38%">
-        <template #default="scope">
-          <!- <span>{{islike}}</span> ->
-          <i
-            class="iconfont"
-            :class="!scope.row.islike ? 'icon-dan-like-outline' : 'icon-xihuan'"
-            style="color: var(--netease-color)"
-          ></i>
-          <!- <i class="iconfont icon-xihuan icon-dan-like-outline" @click="changeLike(scope)" v-else></i> ->
-        </template>
-      </el-table-column>
-      <el-table-column label="音乐标题" width="510%">
-        <template #default="scope">
-          <span class="textcontent">
-            <span>{{ scope.row.name }}</span>
-            <span style="color: rgb(150, 150, 151)">{{
-              scope.row.alia[0] === undefined
-                ? ""
-                : "(" + scope.row.alia[0] + ")"
-            }}</span>
-            <i
-              class="iconfont icon-VIP"
-              :class="{ noShow: scope.row.fee !== 1 }"
-              style="
-                margin: 0 2px;
-                color: red;
-                position: relative;
-                bottom: -4px;
-                font-size: 20px;
-              "
-            ></i>
-            <i
-              class="iconfont icon-mv"
-              :class="{ noShow: scope.row.mv === 0 }"
-              style="
-                margin: 0 2px;
-                color: red;
-                font-size: 20px;
-                cursor: pointer;
-              "
-            ></i>
-          </span>
-        </template>
-      </el-table-column>
-      <el-table-column label="歌手" width="255%">
-        <!- <template #default="scope">
-          <span>{{ conName(scope.row.ar) }}</span>
-        </template> ->
-      </el-table-column>
-      <el-table-column label="专辑" prop="al.name" width="330%">
-      </el-table-column>
-      <el-table-column width="100%" label="时长">
-        <!- <template #default="scope">
-          <span style="color: rgb(155, 155, 155)">
-            {{ playTime(scope.row) }}</span
-          >
-        </template> ->
-      </el-table-column>
-    </el-table> -->
+    <Dialog v-model:show="showdialog" width="471px" height="257px">
+      <div class="replacePlaylist">
+        <div class="title">替换播放列表</div>
+        <div class="content">
+          “双击播放”会用当前列表的音乐替换播放列表，是否继续？（可在
+          <span class="hover">设置-播放</span> 中更改）
+        </div>
+        <div class="nowarn">
+          <Checkbox
+            label="不再提醒"
+            :modelValue="dbclickwarn"
+            @update:modelValue="handleDbclickwarn"
+          ></Checkbox>
+        </div>
+        <div class="bottom">
+          <Button theme="ofRed" @handleClick="handleContinue">继续</Button>
+          <Button @handleClick="closeDialog">取消</Button>
+        </div>
+      </div>
+    </Dialog>
   </div>
 </template>
 
@@ -152,11 +107,20 @@ import TableList from "@/components/tableList/index.vue";
 import { getAllTrack } from "@/network/methods";
 import { songDetail } from "@/types";
 import { extractFromSongDetail } from "@/util";
-// import { key } from "./project";
+import { useDialog } from "@/hooks/dialog";
+import { useMusicStore } from "@/store/index";
+import util from "@/hooks/util";
+const props = defineProps(["id"]);
+
 const data = ref<songDetail[]>([]);
 const searchValue = ref("");
 const isLoading = ref(true);
 const route = useRoute();
+const { showdialog } = useDialog();
+const musicStore = useMusicStore();
+const { getStorage, addStorage } = util();
+const dbclickwarn = ref(JSON.parse(getStorage("dbclickwarn") || "false"));
+// const dbclickwarn = ref(false);
 const format = [
   { title: "操作", slotName: "operate", width: "50px" },
   {
@@ -170,13 +134,47 @@ const format = [
   { title: "时间", slotName: "time", width: "40px", key: ["dt"] },
 ];
 
-getAllTrack(route.params.id as string).then((res: any) => {
-  if (res.code === 200) {
-    data.value = extractFromSongDetail(res.songs, res.privileges);
+watch(
+  () => props.id,
+  val => {
+    if (val) {
+      isLoading.value = true;
+      getAllTrack(props.id as string).then((res: any) => {
+        if (res.code === 200) {
+          data.value = extractFromSongDetail(
+            res.songs,
+            res.privileges,
+            route.params.id as string
+          );
+          isLoading.value = false;
+        }
+      });
+    }
+  },
+  { immediate: true }
+);
 
-    isLoading.value = false;
+const handleDbclick = (item: songDetail) => {
+  if (!dbclickwarn.value) {
+    showdialog.value = true;
+  } else {
+    musicStore.replacePlaylist(data.value);
   }
-});
+};
+
+const handleDbclickwarn = (val: boolean) => {
+  dbclickwarn.value = val;
+  addStorage("dbclickwarn", JSON.stringify(val));
+};
+
+const handleContinue = () => {
+  musicStore.replacePlaylist(data.value);
+  closeDialog();
+};
+
+const closeDialog = () => {
+  showdialog.value = false;
+};
 
 // const filterData = computed(() => {
 //   const val = searchValue.value;
@@ -213,6 +211,9 @@ getAllTrack(route.params.id as string).then((res: any) => {
 //   });
 //   return res;
 // });
+defineExpose({
+  list: data,
+});
 </script>
 
 <style scoped lang="scss">
@@ -251,6 +252,45 @@ getAllTrack(route.params.id as string).then((res: any) => {
       opacity: 0.5;
       @include font-color-desc("caret-color");
       // color: rgba(255, 255, 255, 0.4);
+    }
+  }
+}
+.replacePlaylist {
+  .title {
+    height: 85px;
+    line-height: 85px;
+    text-align: center;
+    font-weight: bold;
+    @include font-color();
+  }
+  .content {
+    height: 25px;
+    line-height: 25px;
+    width: 300px;
+    margin: 0 auto;
+    font-size: 14px;
+    text-align: center;
+    @include font-color();
+    span {
+      @include font-color-blue();
+      cursor: pointer;
+    }
+  }
+  .nowarn {
+    text-align: center;
+    margin-top: 38px;
+  }
+
+  .bottom {
+    margin-top: 30px;
+    text-align: center;
+    .n-button {
+      padding-left: 22px;
+      padding-right: 22px;
+      letter-spacing: 5px;
+      &:first-child {
+        margin-right: 13px;
+      }
     }
   }
 }

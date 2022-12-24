@@ -68,7 +68,7 @@
 <script lang="ts" setup>
 // import LoginDialog from "@/views/Login/index.vue";
 import profilePopover from "./profilePopover.vue";
-import { userProfileStore } from "@/store/index";
+import { useProfileStore } from "@/store/index";
 import { ipcRenderer } from "electron";
 import SkinPopover from "./skin.vue";
 import { getVIP } from "@/network/User";
@@ -77,7 +77,7 @@ import { CreateChildWindows } from "@/util";
 import { NNotify as Notify } from "ui/components/notify";
 let isFullScreen = ref<boolean>(false);
 
-const profileStore = userProfileStore();
+const profileStore = useProfileStore();
 // const Login: any = ref(null);
 const vipList = reactive<VIPList>({
   dynamicIconUrl: null,

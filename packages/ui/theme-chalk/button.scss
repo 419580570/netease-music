@@ -1,6 +1,7 @@
 @use "./mixins/config.scss" as *;
 
 .#{$namespace}-button {
+  position: relative;
   height: 30px;
   border-radius: 30px;
   border: 1px solid rgb(217, 217, 217);
@@ -9,6 +10,10 @@
   box-sizing: border-box;
   color: rgb(51, 51, 51);
   cursor: pointer;
+  &__content {
+    position: relative;
+    z-index: 1;
+  }
   &:hover {
     background-color: rgb(242, 242, 242);
   }
@@ -24,8 +29,21 @@
     background-color: rgb(234, 72, 72) !important;
     border-color: rgb(234, 72, 72) !important;
     color: #fff !important;
-    &:hover {
-      background-color: rgb(199, 46, 46) !important;
+    &::after {
+      content: "";
+      width: calc(100% + 2px);
+      height: calc(100% + 2px);
+      border-radius: 30px;
+      display: inline-block;
+      position: absolute;
+      background-color: black;
+      opacity: 0;
+      top: -1px;
+      left: -1px;
+      z-index: 0;
+    }
+    &:hover::after {
+      opacity: 0.1;
     }
   }
 }

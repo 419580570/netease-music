@@ -26,65 +26,65 @@
 
 @mixin basic_color() {
   @include themeify {
-    background-color: themed("basic") !important;
+    background-color: themed("basic");
   }
 }
 @mixin navbar_stripe() {
   @include themeify {
-    background-image: themed("navbar-stripe") !important;
+    background-image: themed("navbar-stripe");
   }
 }
 @mixin theme_pickButton_border() {
   @include themeify {
-    border-color: themed("theme-pickButton-border") !important;
+    border-color: themed("theme-pickButton-border");
   }
 }
 @mixin main_color() {
   @include themeify {
-    background-color: themed("main-color") !important;
+    background-color: themed("main-color");
   }
 }
 @mixin font-color($key: "color") {
   @include themeify {
-    #{$key}: themed("font-color") !important;
+    #{$key}: themed("font-color");
     &.hover {
       &:hover {
-        #{$key}: themed("font-color-hover") !important;
+        #{$key}: themed("font-color-hover");
       }
     }
   }
 }
 @mixin font-color-number() {
   @include themeify {
-    color: themed("font-color-number") !important;
+    color: themed("font-color-number");
   }
 }
 @mixin font-color-desc($key: "color") {
   @include themeify {
-    #{$key}: themed("font-color-desc") !important;
+    #{$key}: themed("font-color-desc");
     &.hover {
       &:hover {
-        #{$key}: themed("font-color-desc-hover") !important;
+        #{$key}: themed("font-color-desc-hover");
       }
     }
   }
 }
 @mixin font-color-blue($key: "color") {
   @include themeify {
-    #{$key}: themed("font-color-blue") !important;
+    #{$key}: themed("font-color-blue");
     &.hover {
       &:hover {
-        #{$key}: themed("font-color-blue-hover") !important;
+        #{$key}: themed("font-color-blue-hover");
       }
     }
   }
 }
 @mixin font-color-dark($key: "color") {
   @include themeify {
-    #{$key}: themed("font-color-dark") !important;
+    #{$key}: themed("font-color-dark");
     &.hover {
       &:hover {
-        #{$key}: themed("font-color-dark-hover") !important;
+        #{$key}: themed("font-color-dark-hover");
       }
     }
   }
@@ -96,22 +96,27 @@
 }
 @mixin input-bg() {
   @include themeify {
-    background-color: themed("input-bg") !important;
+    background-color: themed("input-bg");
   }
 }
 @mixin hover-default() {
   @include themeify {
-    background-color: themed("hover-default") !important;
+    background-color: themed("hover-default");
   }
 }
 @mixin hover-menuList($key: "background-color") {
   @include themeify {
-    #{$key}: themed("hover-menuList") !important;
+    #{$key}: themed("hover-menuList");
   }
 }
 @mixin split-line($key: "background-color") {
   @include themeify {
-    #{$key}: themed("split-line") !important;
+    #{$key}: themed("split-line");
+  }
+}
+@mixin player-bg() {
+  @include themeify {
+    background-color: themed("player-bg");
   }
 }
 
@@ -124,11 +129,14 @@
       background-color: transparent;
     }
     &::-webkit-scrollbar-thumb {
-      background-color: themed("popover_tb") !important;
+      background-color: themed("popover_tb");
       border-radius: 5px;
       &:hover {
-        background-color: themed("popover_tb_h") !important;
+        background-color: themed("popover_tb_h");
       }
+    }
+    &::-webkit-scrollbar-corner {
+      background-color: transparent;
     }
   }
 }

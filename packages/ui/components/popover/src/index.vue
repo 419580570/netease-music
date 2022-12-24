@@ -19,9 +19,9 @@
 </template>
 
 <script lang="ts">
-import { nextTick } from "process";
 import {
   defineComponent,
+  nextTick,
   onBeforeUnmount,
   onMounted,
   ref,

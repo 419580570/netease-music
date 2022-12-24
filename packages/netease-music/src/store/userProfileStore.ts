@@ -67,7 +67,7 @@ const profile: Partial<profile> = {
   nickname: "未登录",
 };
 
-export default defineStore("profile", {
+export const useProfileStore = defineStore("profile", {
   state: () => ({
     profile,
     isLogin: false,

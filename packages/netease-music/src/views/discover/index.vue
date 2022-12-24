@@ -42,9 +42,5 @@ const handleClick = (index: number) => {
   display: flex;
   justify-content: center;
   padding: 30px 0 0;
-  height: 100%;
-  // display: flex;
-  // align-items: center;
-  // justify-content: center;
 }
 </style>

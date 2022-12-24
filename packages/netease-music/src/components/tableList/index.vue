@@ -1,5 +1,17 @@
 <template>
-  <Table v-bind="$attrs" class="table-wrapper">
+  <Table
+    v-bind="$attrs"
+    class="table-wrapper"
+    @dbclick="handleDbclick"
+    :data="filterData"
+    :currentPlay="currentId"
+  >
+    <template #play="item">
+      <Icon
+        :type="playState ? 'bofang' : 'zanting'"
+        v-if="item.id && currentId === item.id"
+      ></Icon
+    ></template>
     <template #operate="item">
       <Icon type="xihuan" class="hover"></Icon>
       <Icon type="xiazai" class="hover"></Icon>
@@ -20,16 +32,51 @@
         class="namealia hover"
       ></NameAlia>
     </template>
+    <template #jump="{ from }">
+      <Icon type="lianjie" class="hover" @click="toDetail(from)"></Icon>
+    </template>
     <template #time="{ dt }">
       <span class="time">{{ convertTime(dt) }}</span>
     </template>
   </Table>
+  <Pagination
+    :max="max"
+    :total="data.length"
+    @handlePagination="handlePagination"
+  ></Pagination>
 </template>
 
 <script lang="ts" setup>
 import SongTag from "@/components/songTag/index.vue";
 import NameGroup from "@/components/nameGroup/index.vue";
 import NameAlia from "@/components/nameAlia/index.vue";
+import { songDetail } from "@/types";
+// import { useMusicStore } from "@/store";
+import { musicGetters } from "@/hooks/store";
+const { playState, currentId } = musicGetters();
+const router = useRouter();
+
+// const musicStore = useMusicStore();
+const props = withDefaults(
+  defineProps<{ data: songDetail[]; max?: number }>(),
+  {
+    max: 50,
+  }
+);
+
+const emit = defineEmits(["handleDbclick"]);
+
+const currentPage = ref(0);
+const filterData = computed(() => {
+  if (!props.max) return props.data;
+  return (
+    props.data &&
+    props.data.slice(
+      props.max * currentPage.value,
+      props.max * (currentPage.value + 1)
+    )
+  );
+});
 
 function addZero(num: number) {
   if (num < 10) return "0" + num;
@@ -41,6 +88,18 @@ function convertTime(dt: number) {
   var sec = parseInt(String(time - 60 * min));
   return addZero(min) + ":" + addZero(sec);
 }
+
+const handlePagination = (page: number) => {
+  currentPage.value = page;
+};
+
+const handleDbclick = (item: songDetail) => {
+  emit("handleDbclick", item);
+};
+
+const toDetail = (from: string) => {
+  router.push(`/songlist/${from}`);
+};
 </script>
 
 <style scoped lang="scss">
@@ -58,12 +117,23 @@ function convertTime(dt: number) {
   .xiazai {
     font-size: 16px;
   }
-
+  .bofang,
+  .zanting {
+    font-size: 11px;
+    @include red_custom("color");
+  }
+  .lianjie {
+    font-size: 12px;
+    margin-top: 3px;
+    cursor: pointer;
+    @include font-color-desc();
+  }
   .namegroupWrapper {
     width: calc(100% - 10px);
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    @include font-color-dark();
     :deep(.nameGroup) {
       .nameGroup-item {
         @include font-color-dark();
@@ -83,5 +153,8 @@ function convertTime(dt: number) {
     letter-spacing: 0.5px;
     @include font-color-desc();
   }
+}
+.n-pagination {
+  margin-top: 20px;
 }
 </style>

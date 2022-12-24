@@ -209,13 +209,13 @@ defineExpose({
           .exit {
             display: none;
             position: absolute;
-            right: 5px;
+            right: -9px;
             top: 3.5px;
             @include font-color-number();
           }
           .n-button:hover {
             .exit {
-              display: flex;
+              display: block;
             }
           }
         }

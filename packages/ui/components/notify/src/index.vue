@@ -81,7 +81,7 @@ export default {
         };
       }
 
-      return { ...style, fontSize: props.size + "px" };
+      return { ...style, fontSize: props.size + "px", ...props.style };
     });
 
     onMounted(() => {

@@ -34,7 +34,6 @@ defineProps<{ data: songDetail[] }>();
   justify-content: space-between;
   flex-wrap: wrap;
   height: 240px;
-  // &-line {
   &-item {
     flex-basis: 49px;
     width: calc(100% / 3 - 12px);
@@ -68,8 +67,17 @@ defineProps<{ data: songDetail[] }>();
       height: 49px;
       width: calc(100% - 49px);
       box-sizing: border-box;
-      .q-ar > .q {
-        margin-right: 7px;
+      .name {
+        width: 100%;
+      }
+      .q-ar {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        @include font-color-desc();
+        .q {
+          margin-right: 7px;
+        }
       }
     }
   }

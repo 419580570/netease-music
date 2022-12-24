@@ -75,12 +75,12 @@
 import { useSlideColor } from "@/hooks/useSlideColorPicker";
 import { useCalcRgb } from "./skin";
 import utils from "@/hooks/util";
-import { userProfileStore } from "@/store/index";
+import { useProfileStore } from "@/store/index";
 const { addStorage, getStorage } = utils();
 
 const themeOrPure = ref(0);
 const currentPick = ref(getStorage("color-pick"));
-const profile = userProfileStore();
+const profile = useProfileStore();
 
 const handleClick = (index: number) => {
   themeOrPure.value = index;

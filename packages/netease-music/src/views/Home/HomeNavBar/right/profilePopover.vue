@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts" setup>
-import { userProfileStore } from "@/store/index";
+import { useProfileStore } from "@/store/index";
 import { logOut, signIn } from "@/network/methods";
 import { openExternal } from "@/util/electron";
 import { logout as _logout } from "@/util";
@@ -79,7 +79,7 @@ if (isSign.value && new Date().getDay() !== isSign.value) {
   removeStorage("sign-in");
   isSign.value = false;
 }
-const profileStore = userProfileStore();
+const profileStore = useProfileStore();
 
 const profile = computed(() => {
   const profile = profileStore.profile!;

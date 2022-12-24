@@ -2,39 +2,49 @@
   <div class="common-layout" v-if="isRouterActive">
     <HomeNavBar></HomeNavBar>
     <div class="container">
-      <MenuList />
+      <HomeMenuList />
       <div class="content">
-        <router-view> </router-view>
-        <!-- <router-view v-slot="{ Component }">
+        <router-view v-slot="{ Component }">
           <keep-alive>
             <component :is="Component" />
           </keep-alive>
-        </router-view> -->
+        </router-view>
       </div>
     </div>
-    <!--</el-header>
-      <el-container>
-        <el-aside width="200px">
-        </el-aside>
-        <el-main
-          >
-        </el-main>
-      </el-container>
-    </el-container> -->
+    <HomePlayer></HomePlayer>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { getLoginStatus, getUserDetail } from "@/network/methods";
-import HomeNavBar from "@/views/Home/HomeNavBar/index.vue";
+import HomeNavBar from "./HomeNavBar/index.vue";
 import { ipcRenderer } from "electron";
 import { login, logout } from "@/util";
-import MenuList from "./HomeMenuList/index.vue";
-// profileStore.$subscribe((mutation, state) => {
-//   state.profile.profile &&
-//     // 每当它发生变化时，将用户状态持久化到本地存储
-//     localStorage.setItem("userId", `${state.profile.profile.userId}`);
-// });
+import HomeMenuList from "./HomeMenuList/index.vue";
+import HomePlayer from "./HomePlayer/index.vue";
+import { useMusicStore } from "@/store/index";
+import util from "@/hooks/util";
+const { getStorage, addStorage } = util();
+const router = useRouter();
+const musicStore = useMusicStore();
+musicStore.$state = JSON.parse(getStorage("music") || "{}");
+
+musicStore.$subscribe((mutation, state) => {
+  // 每当它发生变化时，将用户状态持久化到本地存储
+  addStorage("music", JSON.stringify(state));
+});
+
+/* 清空window.history */
+if (window.history.length > 2) {
+  const position = window.history.state.position;
+  if (position > 1) {
+    let backlen = position - 1;
+    window.history.go(-backlen);
+  } else if (position == 0) {
+    window.history.go(1);
+  }
+  // router.replace("/discover/recommend");
+}
 
 // 每次初始化页面获取一次用户数据
 getLoginStatus().then((res: any) => {
@@ -69,14 +79,14 @@ ipcRenderer.on("login-send", (_, detail) => {
   @include main_color();
   .container {
     display: flex;
-    height: 100%;
+    height: calc(100vh - 133px);
     .menuList {
       min-width: 200px;
     }
     .content {
       width: 100%;
       padding: 25px;
-      overflow: scroll;
+      overflow-y: scroll;
       @include scrollbar();
       position: relative;
     }

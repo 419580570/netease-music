@@ -1,19 +1,19 @@
 <template>
-  <div class="playbutton" @click="playAll" v-bind="$attrs">
-    <span class="button">
+  <div class="playbutton" v-bind="$attrs">
+    <span class="button" @click="addAll(true)">
       <Icon type="bofang"></Icon>
       <span class="playall">播放全部</span>
     </span>
-    <span class="button plus">
+    <span class="button plus" @click="addAll(false)">
       <Icon type="jiahao"></Icon>
     </span>
   </div>
 </template>
 
 <script lang="ts" setup>
-const emit = defineEmits(["showDialog"]);
-const playAll = () => {
-  emit("showDialog");
+const emit = defineEmits(["addAll", "addOne"]);
+const addAll = (bool: boolean) => {
+  emit("addAll", bool);
 };
 </script>
 

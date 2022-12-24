@@ -25,20 +25,20 @@ withDefaults(
 <style scoped lang="scss">
 @import "@/assets/css/handle";
 .nameGroup {
+  font-size: 12px;
   &.blue {
     .nameGroup-item {
       @include font-color-blue();
     }
   }
   &-item {
-    font-size: 12px;
     cursor: pointer;
     @include font-color-desc();
   }
   &-split {
     @include font-color-dark();
     display: inline-block;
-    font-size: 10px;
+    font-size: 0.9em;
     margin: 0 5px;
     transform: translateY(-1px);
   }
