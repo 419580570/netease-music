@@ -2,17 +2,24 @@
   <div class="n-player">
     <Info></Info>
     <Player></Player>
-    <Options ref="options"></Options>
-    <SongList :class="{ show: options?.showPlaylist }"></SongList>
+    <Options ref="options" v-model="showPlaylist"></Options>
+    <SongList :class="{ show: showPlaylist }"></SongList>
+    <Lyric @click="showPlaylist = false"></Lyric>
   </div>
 </template>
 
 <script lang="ts" setup>
-import Player from "./player.vue";
-import Info from "./info.vue";
-import Options from "./options.vue";
-import SongList from "./songlist.vue";
+import Player from "./play/player.vue";
+import Info from "./info/info.vue";
+import Options from "./options/options.vue";
+import SongList from "./songlist/songlist.vue";
+import Lyric from "./lyric/index.vue";
 const options = ref<any>(null);
+const showPlaylist = ref(false);
+
+// const togglePlayList = (val: boolean) => {
+//   showPlaylist.value = val;
+// };
 </script>
 
 <style scoped lang="scss">
@@ -24,7 +31,7 @@ const options = ref<any>(null);
   box-sizing: border-box;
   border-top: 1px solid;
   position: relative;
-  z-index: 1000;
+  z-index: 1100;
   @include player-bg();
   @include split-line("border-color");
 }

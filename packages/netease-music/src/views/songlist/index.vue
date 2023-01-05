@@ -77,7 +77,12 @@
           @NavbarClick="handleClick"
         ></Navbar>
         <keep-alive>
-          <component :is="activeLabel" ref="songlist" :id="route.params.id" />
+          <component
+            :is="activeLabel"
+            ref="songlist"
+            :id="route.params.id"
+            :name="playlistDetailData.name"
+          />
         </keep-alive>
       </div>
     </div>
@@ -365,10 +370,11 @@ const { isfold, isLoading, playlistDetailData, tabList } = toRefs(data);
       }
       .button {
         display: flex;
+        justify-content: space-between;
         .buttonitem {
           height: 30px;
           font-size: 14px;
-          margin-left: 15px;
+          // margin-left: 15px;
           .n-icon {
             @include font-color-dark();
             margin-right: 1px;

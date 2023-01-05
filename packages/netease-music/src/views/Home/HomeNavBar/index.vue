@@ -27,7 +27,7 @@ import NavBarCenter from "./center/index.vue";
   -webkit-app-region: drag;
   .darkThemeStripe {
     position: absolute;
-    z-index: 1001;
+    z-index: 1002;
     bottom: 1px;
     height: 1.5px;
     width: 100%;
@@ -46,7 +46,7 @@ import NavBarCenter from "./center/index.vue";
   &::after {
     content: "";
     position: absolute;
-    z-index: 1000;
+    z-index: 1001;
     bottom: 0;
     height: 5px;
     width: 100%;

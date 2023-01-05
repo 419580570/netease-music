@@ -3,20 +3,22 @@
     <div class="player-button">
       <Icon :type="cutway" @click="togglePlayMode"></Icon>
       <Icon type="shangyishou" @click="last"></Icon>
-      <Icon :type="isplay ? 'zanting' : 'bofang'" @click="toggle"></Icon>
+      <Icon
+        :type="isplay ? 'zanting' : 'bofang'"
+        @click="toggle(undefined)"
+      ></Icon>
       <Icon type="xiayishou" @click="next"></Icon>
       <span class="ci">词</span>
     </div>
-    <div class="player-progress" @mousedown="jump">
+    <div class="player-progress">
       <div class="currentTime">{{ time.playTime }}</div>
-      <div class="progress">
+      <div class="progress" @mousedown="jump">
         <div class="progress-loading" :style="{ '--loaded': loaded }"></div>
         <div class="progress-done" :style="{ '--width': sper }"></div>
         <audio
           :src="url"
           :loop="loop"
           :muted="musicStore.isMute"
-          type="audio/mp3"
           preload="auto"
           @timeupdate="update"
           @ended="ended"
@@ -143,9 +145,7 @@ const {
     .totalTime {
       @include font-color-desc();
       font-size: 11.5px;
-      font-weight: lighter;
-      letter-spacing: 0.3px;
-      transform: translateY(-40%);
+      transform: translateY(-30%);
     }
     .progress {
       width: 350px;

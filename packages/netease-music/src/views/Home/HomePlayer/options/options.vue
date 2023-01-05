@@ -37,9 +37,17 @@ const { changeVolume, toggleMute } = musicActions();
 const progress = ref<HTMLElement | null>(null);
 const dragLength = ref(0);
 const show = ref(false);
-const showPlaylist = ref(false);
+const keep = ref<number | null>(null);
+const props = defineProps(["modelValue"]);
+const emit = defineEmits(["update:modelValue"]);
 const mute = (e: Event) => {
   if ((e.target as any).className.includes("options-item")) {
+    if (!isMute.value) {
+      keep.value = volume.value;
+      changeVolume(0);
+    } else if (keep.value) {
+      changeVolume(keep.value);
+    }
     toggleMute(!isMute.value);
   }
 };
@@ -54,14 +62,18 @@ watchEffect(() => {
 });
 
 const toggleSonglist = (e: Event) => {
-  showPlaylist.value = !showPlaylist.value;
+  let val = props.modelValue;
+  emit("update:modelValue", !val);
+  // showPlaylist.value = !showPlaylist.value;
   function close(_e: Event) {
     const player = document.querySelector(".n-player");
     if (player?.contains(_e.target as any)) return;
-    showPlaylist.value = false;
+
+    emit("update:modelValue", false);
+    // showPlaylist.value = false;
     document.removeEventListener("click", close);
   }
-  if (showPlaylist.value) {
+  if (!val) {
     document.addEventListener("click", close);
   } else {
     document.removeEventListener("click", close);
@@ -69,9 +81,10 @@ const toggleSonglist = (e: Event) => {
 };
 
 const handleDragVolume = (e: MouseEvent) => {
-  if (!e.target || isMute.value) return;
+  if (!e.target) return;
   function drag(ed: any) {
     let percent = volume.value;
+    keep.value = null;
     percent += -(0.8 * ed.movementY) * dragLength.value;
     if (percent < 0) {
       percent = 0;
@@ -79,6 +92,7 @@ const handleDragVolume = (e: MouseEvent) => {
     if (percent > 100) {
       percent = 100;
     }
+    toggleMute(percent ? false : true);
     changeVolume(percent);
   }
   function nodrag() {
@@ -95,10 +109,6 @@ const handleMouseover = () => {
 const handleMouseout = () => {
   show.value = false;
 };
-
-defineExpose({
-  showPlaylist,
-});
 </script>
 
 <style scoped lang="scss">
@@ -256,9 +266,9 @@ defineExpose({
     .mute {
       width: 18px;
       height: 20px;
-      .progress-done {
-        height: 0% !important;
-      }
+      // .progress-done {
+      //   height: 0% !important;
+      // }
       &::after {
         background-image: url("/src/assets/img/mute.png");
       }

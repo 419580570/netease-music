@@ -110,7 +110,7 @@ import { extractFromSongDetail } from "@/util";
 import { useDialog } from "@/hooks/dialog";
 import { useMusicStore } from "@/store/index";
 import util from "@/hooks/util";
-const props = defineProps(["id"]);
+const props = defineProps(["id", "name"]);
 
 const data = ref<songDetail[]>([]);
 const searchValue = ref("");
@@ -144,7 +144,8 @@ watch(
           data.value = extractFromSongDetail(
             res.songs,
             res.privileges,
-            route.params.id as string
+            route.params.id as string,
+            props.name
           );
           isLoading.value = false;
         }

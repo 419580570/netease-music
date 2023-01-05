@@ -1,15 +1,13 @@
-@use "../mixins/mixins.scss" as *;
-/* CDN 服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
+@use "../mixins/mixins.scss" as *; /* CDN 服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
 @font-face {
   font-family: "iconfont"; /* Project id 2526523 */
-  src: url("//at.alicdn.com/t/c/font_2526523_3ctqt31k8pk.woff2?t=1671892648518")
+  src: url("//at.alicdn.com/t/c/font_2526523_1d5lnee5svv.woff2?t=1672310594462")
       format("woff2"),
-    url("//at.alicdn.com/t/c/font_2526523_3ctqt31k8pk.woff?t=1671892648518")
+    url("//at.alicdn.com/t/c/font_2526523_1d5lnee5svv.woff?t=1672310594462")
       format("woff"),
-    url("//at.alicdn.com/t/c/font_2526523_3ctqt31k8pk.ttf?t=1671892648518")
+    url("//at.alicdn.com/t/c/font_2526523_1d5lnee5svv.ttf?t=1672310594462")
       format("truetype");
 }
-
 .#{$namespace}-icon {
   font-family: "iconfont" !important;
   font-size: 16px;
@@ -20,6 +18,26 @@
 
   &:before {
     font-size: inherit;
+  }
+
+  &.quanping:before {
+    content: "\e66f";
+  }
+
+  &.youxiang:before {
+    content: "\e7b1";
+  }
+
+  &.shezhi:before {
+    content: "\e676";
+  }
+
+  &.fenxiang1:before {
+    content: "\e606";
+  }
+
+  &.tianjia:before {
+    content: "\e602";
   }
 
   &.lianjie:before {
@@ -64,6 +82,8 @@
 
   &.xihuan-fill:before {
     content: "\e633";
+    display: inline-block;
+    transform: scaleY(110%);
   }
 
   &.xihuan:before {
@@ -178,14 +198,6 @@
     content: "\e683";
   }
 
-  &.mailbox:before {
-    content: "\e72d";
-  }
-
-  &.setting:before {
-    content: "\e617";
-  }
-
   &.prev:before {
     content: "\e87e";
   }
@@ -242,10 +254,6 @@
 
   &.quxiaoquanping:before {
     content: "\e93e";
-  }
-
-  &.fullscreen:before {
-    content: "\e93f";
   }
 
   &.zan:before {

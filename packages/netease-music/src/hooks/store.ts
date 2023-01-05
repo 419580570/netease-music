@@ -42,6 +42,8 @@ export function musicActions() {
     togglePlayState: musicStore.togglePlayState,
     toggleCutSongWay: musicStore.toggleCutSongWay,
     changeVolume: musicStore.changeVolume,
+    changeProgress: musicStore.changeProgress,
+    changeDuration: musicStore.changeDuration,
     toggleMute: musicStore.toggleMute,
   };
 }

@@ -44,7 +44,10 @@ export type songDetail = {
     tns: Array<string>;
   };
   dt?: number;
-  from?: string;
+  from?: {
+    id: string;
+    name: string;
+  };
   alia: string[];
   name: string;
   picUrl: string;

@@ -76,7 +76,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getSearchList, getSearchSuggest } from "@/network/methods";
+import { getSearchList } from "@/network/methods";
 import util from "@/hooks/util";
 
 export type hotListData = {
@@ -90,37 +90,21 @@ export type hotListData = {
   url: string;
 };
 
-export type suggestList = {
-  albums: { name: string; artist: { name: string } }[];
-  artists: { name: string }[];
-  playlists: { name: string; artist: { name: string } }[];
-  songs: { name: string; artists: { name: string }[] }[];
-};
-
 const { getStorage, addStorage, debounce } = util();
 
 const historyList = ref(JSON.parse(getStorage("historyList") || "[]"));
 
 const hotList = ref<hotListData[]>([]);
-const suggestData = ref<suggestList>();
 const isFold = ref(true);
 
-const prop = defineProps(["searchValue"]);
+const prop = defineProps(["searchValue", "suggestData"]);
+// const emit = defineEmits(["update:hidden"]);
 /* 获取搜索热词 */
 getSearchList().then((res: any) => {
   if (res.code === 200) {
     hotList.value = res.data as hotListData[];
   }
 });
-
-/* 获取搜索建议 */
-const getSuggest = debounce(() => {
-  getSearchSuggest(prop.searchValue).then((res: any) => {
-    if (res.code === 200) {
-      suggestData.value = res.result;
-    }
-  });
-}, 300);
 
 /* 展开折叠搜索历史 */
 const fold = (isfold: boolean) => {
@@ -153,12 +137,6 @@ const parseItem = (item: any) => {
 
 watch(historyList.value, value => {
   addStorage("historyList", JSON.stringify(value));
-});
-
-watchEffect(() => {
-  const value = prop.searchValue;
-  if (!value) return;
-  getSuggest();
 });
 
 defineExpose({

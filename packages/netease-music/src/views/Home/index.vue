@@ -31,7 +31,10 @@ musicStore.$state = JSON.parse(getStorage("music") || "{}");
 
 musicStore.$subscribe((mutation, state) => {
   // 每当它发生变化时，将用户状态持久化到本地存储
-  addStorage("music", JSON.stringify(state));
+  let _state = { ...state };
+  _state.playing = false;
+  _state.lyric = false;
+  addStorage("music", JSON.stringify(_state));
 });
 
 /* 清空window.history */

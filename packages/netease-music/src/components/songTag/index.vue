@@ -12,10 +12,10 @@
 <script lang="ts" setup>
 import { songDetail } from "@/types";
 
-const props = defineProps<{ song: songDetail }>();
+const props = defineProps<{ song: songDetail; group?: string[] }>();
 
 const tags = computed(() => {
-  const res = [];
+  const res: string[] = [];
   if (props.song.noCopyrightRcmd) {
     res.push("无音源");
     return res;
@@ -33,6 +33,13 @@ const tags = computed(() => {
   }
   if (props.song.mv) {
     res.push("MV");
+  }
+  if (props.group) {
+    res.forEach((item, index) => {
+      if (!props.group!.includes(item)) {
+        res.splice(index, 1);
+      }
+    });
   }
 
   return res;
@@ -53,13 +60,13 @@ const tags = computed(() => {
     font-size: 11px;
     display: inline-block;
     height: 10px;
-    line-height: 9px;
+    line-height: 11px;
     padding: 0 1px;
     text-shadow: 0px 0px 0.8px var(--color);
     box-shadow: 0px 0px 0.8px var(--color);
-    transform: scaleX(1.1);
+    // transform: scaleX(1.1);
     &:not(:last-child) {
-      margin-right: 9px;
+      margin-right: 7px;
     }
   }
   > span:not(.VIP) {
@@ -67,7 +74,7 @@ const tags = computed(() => {
   }
   > .SQ {
     transform: scaleX(1.2);
-    letter-spacing: 0.5px;
+    // letter-spacing: 0.5px;
   }
   .VIP {
     --color: rgb(254, 112, 59);
@@ -79,7 +86,7 @@ const tags = computed(() => {
       font-size: 5.5px;
       display: inline-block;
       transform: scaleX(90%);
-      margin-left: 0.5px;
+      margin-left: 1px;
       position: relative;
       bottom: 1.5px;
     }

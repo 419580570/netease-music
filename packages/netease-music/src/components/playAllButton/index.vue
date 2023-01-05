@@ -21,7 +21,7 @@ const addAll = (bool: boolean) => {
 @import "@/assets/css/handle";
 .playbutton {
   @include red-custom();
-  width: 140px;
+  width: 143px;
   box-sizing: border-box;
   height: 30px;
   border-radius: 30px;
@@ -60,7 +60,7 @@ const addAll = (bool: boolean) => {
       opacity: 0.15;
     }
     .bofang {
-      margin-left: 8px;
+      margin-left: 4px;
       position: absolute;
       font-size: 17px;
       left: 8px;

@@ -7,7 +7,8 @@ export * from "./util";
 export function extractFromSongDetail(
   song: any,
   privileges: any,
-  id?: string
+  id?: string,
+  name?: string
 ): songDetail[] {
   return song.map(
     (item: any, index: number): songDetail => ({
@@ -22,7 +23,7 @@ export function extractFromSongDetail(
       picUrl: item.al.picUrl,
       plLevel: privileges[index].plLevel,
       mv: item.mv,
-      from: id,
+      from: { id: id!, name: name! },
       noCopyrightRcmd: item.noCopyrightRcmd,
     })
   );

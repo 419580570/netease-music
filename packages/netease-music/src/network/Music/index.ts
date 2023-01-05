@@ -22,3 +22,7 @@ export function getURL(id: number): Promise<string> {
       });
   });
 }
+
+export function getLyric(id: string | number) {
+  return get("/lyric", { id });
+}

@@ -1,5 +1,5 @@
 <template>
-  <div class="NavBarRight">
+  <div class="NavBarRight" :class="{ isLyric: musicStore.lyric }">
     <!-- <el-popover
       placement="top"
       ref="popover"
@@ -38,16 +38,16 @@
     <span class="popoverWrapper">
       <Popover trigger="click" width="320px" height="275px">
         <template #reference>
-          <Icon type="clothes" :size="18"></Icon>
+          <Icon type="clothes" :size="17"></Icon>
         </template>
         <SkinPopover></SkinPopover>
       </Popover>
     </span>
 
-    <Icon type="setting" :size="18"></Icon>
+    <Icon type="shezhi" :size="17"></Icon>
     <!-- 设置 -->
 
-    <Icon type="mailbox" :size="18"></Icon>
+    <Icon type="youxiang" :size="16"></Icon>
     <!-- 消息 -->
 
     <span class="split no-drag">|</span>
@@ -69,6 +69,7 @@
 // import LoginDialog from "@/views/Login/index.vue";
 import profilePopover from "./profilePopover.vue";
 import { useProfileStore } from "@/store/index";
+import { musicStore } from "@/hooks/store";
 import { ipcRenderer } from "electron";
 import SkinPopover from "./skin.vue";
 import { getVIP } from "@/network/User";
@@ -136,10 +137,34 @@ getVIP().then(res => {
 
 <style lang="scss" scoped>
 .NavBarRight {
+  --color: rgb(255, 255, 255, 0.7);
+
+  &.isLyric {
+    .n-icon,
+    .split {
+      transition-delay: 0.3s;
+    }
+    --color: rgb(0, 0, 0, 0.5);
+    [data-theme="coDark"] & {
+      --color: rgb(255, 255, 255, 0.25);
+    }
+    .n-icon,
+    .leftspan {
+      &:hover {
+        color: var(--color);
+      }
+    }
+  }
   .n-icon,
   .split {
+    position: relative;
     margin: 0 10px;
-    color: $font-color;
+    color: var(--color);
+    transition: color 0s 0s linear;
+  }
+  .n-icon:not(.clothes, .htmal5icon03),
+  .split {
+    z-index: 1101;
   }
   .n-icon,
   .leftspan {
@@ -190,6 +215,10 @@ getVIP().then(res => {
     display: inline-block;
     position: relative;
     height: 100%;
+  }
+  .maximize::before {
+    display: inline-block;
+    transform: scaleY(85%);
   }
 }
 .profilePopper {

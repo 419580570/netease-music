@@ -3,21 +3,32 @@ import { getURL } from "@/network/methods";
 import util from "@/hooks/util";
 import { Ref } from "vue";
 export default function usePlayer(next: Function, cutway: Ref<string>) {
-  const { togglePlayState } = musicActions();
+  const { togglePlayState, changeProgress, changeDuration } = musicActions();
   const { currentId } = musicGetters();
   const { parsePlayTime } = util();
   const audio = ref<HTMLAudioElement | null>(null);
   const isplay = ref(false);
   const url = ref("");
   const first = ref(true);
-  const playTime = ref(0);
-  const totalTime = ref(0);
+  // const playTime = ref(0);
+  // const totalTime = ref(0);
   const sper = ref("0%");
   const loaded = ref("0%");
+  const dragging = ref(false);
+  let timer: NodeJS.Timeout | null = null;
 
   /* 切换播放状态 */
-  const toggle = () => {
-    isplay.value = !isplay.value;
+  const toggle = (val?: boolean) => {
+    /* 正在 */
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+    if (val === undefined) {
+      isplay.value = !isplay.value;
+    } else {
+      isplay.value = val;
+    }
     if (isplay.value) {
       /* 当处于当前列表播放完状态时，点击播放按钮跳转到第一条播放 */
       if (musicStore.isEnd) {
@@ -34,14 +45,15 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
     if (audio.value?.paused) {
       audio.value!.play();
       let volume = musicStore.volume / 100;
-      let timer = setInterval(() => {
-        if (audio.value!.volume < volume && audio.value!.volume < volume) {
+      timer = setInterval(() => {
+        if (audio.value!.volume < volume) {
           audio.value!.volume += volume / 10;
         } else {
-          clearInterval(timer);
+          clearInterval(timer!);
+          timer = null;
           audio.value!.volume = volume;
         }
-      }, 100);
+      }, 80);
     }
   };
 
@@ -49,30 +61,31 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
     /* 声音渐渐消失 */
     if (!audio.value) return;
     if (!audio.value.paused) {
-      let gap = audio.value.volume / 10;
-      let timer = setInterval(() => {
-        if (audio.value!.volume > 0 && audio.value!.volume > gap) {
-          audio.value!.volume -= gap;
+      let volume = musicStore.volume / 100;
+      timer = setInterval(() => {
+        if (audio.value!.volume > 0 && audio.value!.volume >= volume / 10) {
+          audio.value!.volume -= volume / 10;
         } else {
-          clearInterval(timer);
+          clearInterval(timer!);
+          timer = null;
           audio.value!.volume = 0;
           audio.value!.pause();
         }
-      }, 100);
+      }, 80);
     }
   };
 
   /* 当音乐播放进度变化时的回调 */
   const update = () => {
-    audio.value?.currentTime && (playTime.value = audio.value?.currentTime);
+    audio.value?.currentTime && changeProgress(audio.value?.currentTime);
   };
 
   /* 当音乐缓冲区变化时的回调 */
   const progress = () => {
     var timeRange = audio.value?.buffered!;
-    if (!timeRange.length || !totalTime.value) return;
+    if (!timeRange.length || !musicStore.duration) return;
     loaded.value =
-      (timeRange.end(timeRange.length - 1) / totalTime.value) * 100 + "%";
+      (timeRange.end(timeRange.length - 1) / musicStore.duration) * 100 + "%";
   };
 
   /* 当音乐播放完毕时回调 */
@@ -91,15 +104,16 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
 
   /* 当音乐可以播放时的回调 */
   const ready = () => {
-    totalTime.value = audio.value?.duration || 0;
+    changeDuration(audio.value?.duration || 0);
+    /* 加载好音乐后显示缓冲条 */
+    progress();
     /* 页面初始化加载好的音乐不播放 */
     if (first.value) {
       first.value = false;
       return;
     }
-    audio.value?.play();
+    toggle(true);
     isplay.value = true;
-    progress();
   };
 
   /* 当点击播放条时跳转播放 */
@@ -108,9 +122,10 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
     if ((e.target as any).className === "progress") {
       /* 点击 */
       audio.value!.currentTime =
-        totalTime.value * (e.offsetX / (e.target as any).offsetWidth);
+        musicStore.duration * (e.offsetX / (e.target as any).offsetWidth);
     } else {
       /* 拖动 */
+      dragging.value = true;
       const offsetX = e.offsetX;
       const clientX = e.clientX;
       let width = 0;
@@ -125,7 +140,8 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
         sper.value = width + "px";
       };
       const up = () => {
-        audio.value!.currentTime = (width / 350) * totalTime.value;
+        audio.value!.currentTime = (width / 350) * musicStore.duration;
+        dragging.value = false;
         document.removeEventListener("mousemove", move);
         document.removeEventListener("mouseup", up);
       };
@@ -135,9 +151,11 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
   };
 
   const time = computed(() => {
-    const playtime = playTime.value;
-    const totaltime = totalTime.value;
-    sper.value = ((playtime / totaltime) * 100).toFixed(2) + "%";
+    const playtime = musicStore.progress;
+    const totaltime = musicStore.duration;
+    if (!dragging.value) {
+      sper.value = ((playtime / totaltime) * 100).toFixed(2) + "%";
+    }
     return {
       playTime: parsePlayTime(playtime * 1000),
       totalTime: parsePlayTime(totaltime * 1000),
@@ -187,6 +205,11 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
     },
     { immediate: true }
   );
+
+  /* 页面加载完成更新播放进度 */
+  onMounted(() => {
+    musicStore.progress && (audio.value!.currentTime = musicStore.progress);
+  });
 
   return {
     url,

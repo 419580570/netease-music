@@ -12,6 +12,10 @@ export function getRecommendData(data: any) {
   });
 }
 
+export function getDailyRecommend() {
+  return get("/recommend/resource");
+}
+
 export function getPrivatecontent() {
   return get("personalized/privatecontent");
 }

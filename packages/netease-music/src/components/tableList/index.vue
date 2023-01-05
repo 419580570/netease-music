@@ -33,7 +33,7 @@
       ></NameAlia>
     </template>
     <template #jump="{ from }">
-      <Icon type="lianjie" class="hover" @click="toDetail(from)"></Icon>
+      <Icon type="lianjie" class="hover" @click="toDetail(from.id)"></Icon>
     </template>
     <template #time="{ dt }">
       <span class="time">{{ convertTime(dt) }}</span>
@@ -149,9 +149,9 @@ const toDetail = (from: string) => {
     cursor: pointer;
   }
   .time {
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    @include font-color-desc();
+    font-size: 12px;
+    // letter-spacing: 0.5px;
+    @include font-color-number();
   }
 }
 .n-pagination {

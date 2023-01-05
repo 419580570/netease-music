@@ -26,7 +26,7 @@ export default function cutSong() {
           offsetY: 60,
           style: {
             padding: "7px 32px",
-            borderRadius: "15px"
+            borderRadius: "15px",
           },
         });
         break;
@@ -41,7 +41,7 @@ export default function cutSong() {
           offsetY: 60,
           style: {
             padding: "7px 32px",
-            borderRadius: "15px"
+            borderRadius: "15px",
           },
         });
         break;
@@ -56,7 +56,7 @@ export default function cutSong() {
           offsetY: 60,
           style: {
             padding: "7px 32px",
-            borderRadius: "15px"
+            borderRadius: "15px",
           },
         });
         break;
@@ -71,7 +71,7 @@ export default function cutSong() {
           offsetY: 60,
           style: {
             padding: "7px 32px",
-            borderRadius: "15px"
+            borderRadius: "15px",
           },
         });
         break;

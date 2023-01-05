@@ -89,6 +89,27 @@
     }
   }
 }
+@mixin font-color-lyric($key: "color") {
+  @include themeify {
+    #{$key}: themed("font-color-lyric");
+    &.hover {
+      #{$key}: themed("font-color-lyric-hover");
+    }
+    &.active {
+      #{$key}: themed("font-color-lyric-active");
+    }
+  }
+}
+@mixin font-color-lyric-active($key: "color") {
+  @include themeify {
+    #{$key}: themed("font-color-lyric-active");
+  }
+}
+@mixin font-color-lyric-hover($key: "color") {
+  @include themeify {
+    #{$key}: themed("font-color-lyric-hover");
+  }
+}
 @mixin red_custom($key: "background-color") {
   @include themeify {
     #{$key}: themed("red_custom") !important;

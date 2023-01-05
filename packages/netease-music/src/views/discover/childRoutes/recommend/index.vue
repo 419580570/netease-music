@@ -55,6 +55,7 @@ import {
   geNewSong,
   getPrivatecontent,
   getRecommendData,
+  getDailyRecommend,
   getSongDetail,
   getrcMV,
 } from "@/network/methods";
@@ -80,7 +81,7 @@ let isLoading = ref(true);
 
 let promises = [
   getCarouselData(),
-  getRecommendData({ limit: 9 }),
+  getDailyRecommend(),
   getPrivatecontent(),
   geNewSong(),
   getrcMV(),
@@ -104,9 +105,8 @@ Promise.allSettled(promises).then((results: any) => {
           });
         break;
       case 1:
-        const res = result.value.result.map((item: any) => {
+        const res = result.value.recommend.slice(0, 9).map((item: any) => {
           return {
-            highQuality: item.highQuality,
             id: item.id,
             name: item.name,
             picUrl: item.picUrl,

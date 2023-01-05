@@ -5,7 +5,7 @@
     v-for="(item, index) in ar"
     v-bind="$attrs"
   >
-    <span class="nameGroup-item hover">{{ item.name }}</span>
+    <span class="nameGroup-item hover" :title="item.name">{{ item.name }}</span>
     <span class="nameGroup-split" v-if="index !== ar.length - 1">/</span>
   </span>
 </template>

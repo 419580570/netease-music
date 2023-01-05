@@ -48,12 +48,12 @@ export default defineComponent({
     const showPopover = ref(false);
     const move = ref("0px");
 
+    const close = e => {
+      if (parent.contains(e.target)) return;
+      showPopover.value = false;
+    };
     /* 点击切换显隐 */
     const toggle = () => {
-      const close = e => {
-        if (parent.contains(e.target)) return;
-        showPopover.value = false;
-      };
       (!keep.value || !showPopover.value) &&
         (showPopover.value = !showPopover.value);
       if (showPopover.value) {
@@ -79,6 +79,7 @@ export default defineComponent({
     });
 
     watch(disable, value => {
+      console.log(value);
       if (value) return;
       try {
         nextTick(() => {
