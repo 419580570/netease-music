@@ -12,14 +12,16 @@ export function getURL(id: number): Promise<string> {
               resolve(result.data[0].url);
             } else {
               reject();
+              console.log("????????????????????1");
             }
           });
         } else {
-          reject();
+          console.log("????????????????????2");
+          reject(res.message);
         }
       })
-      .catch(() => {
-        reject();
+      .catch(res => {
+        reject(res.response.data.message);
       });
   });
 }

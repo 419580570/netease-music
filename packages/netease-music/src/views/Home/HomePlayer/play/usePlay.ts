@@ -1,5 +1,6 @@
 import { musicActions, musicGetters, musicStore } from "@/hooks/store";
 import { getURL } from "@/network/methods";
+import { NNotify as notify } from "ui/components";
 import util from "@/hooks/util";
 import { Ref } from "vue";
 export default function usePlayer(next: Function, cutway: Ref<string>) {
@@ -92,6 +93,7 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
     if (!audio.value) return;
     var timeRange = audio.value.buffered!;
     if (!timeRange.length || !musicStore.duration) return;
+    console.log(timeRange)
     loaded.value =
       (timeRange.end(timeRange.length - 1) / musicStore.duration) * 100 + "%";
   };
@@ -114,7 +116,6 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
 
   /* 当音乐可以播放时的回调 */
   const ready = () => {
-    changeDuration(audio.value?.duration || 0);
     changeProgress(0);
     audio.value!.currentTime = 0;
     audio.value!.play();
@@ -160,7 +161,9 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
   };
 
   const error = () => {
-    // url.value && next();
+    if (first.value) return;
+    const _url = `https://music.163.com/song/media/outer/url?id=${currentId.value}.mp3`;
+    url.value === _url ? next() : (url.value = _url);
   };
 
   const time = computed(() => {
@@ -200,17 +203,25 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
           audio.value.addEventListener("canplay", ready);
         }
       }
-      if (musicStore.getCurrentSong && musicStore.getCurrentSong.fee === 1) {
-        getURL(val)
-          .then(res => {
-            url.value = res;
-          })
-          .catch(() => {
+      changeDuration((musicStore.getCurrentSong?.dt || 0) / 1000);
+      // if (musicStore.getCurrentSong && musicStore.getCurrentSong.fee === 1) {
+      getURL(val)
+        .then(res => {
+          url.value = res;
+        })
+        .catch(message => {
+          if (message) {
+            notify(message);
+            next();
+          } else {
+            notify('发生意外了。。。。');
             musicStore.end();
-          });
-      } else {
-        url.value = `https://music.163.com/song/media/outer/url?id=${val}.mp3`;
-      }
+            isplay.value = false;
+          }
+        });
+      // } else {
+      //   url.value = `https://music.163.com/song/media/outer/url?id=${val}.mp3`;
+      // }
     },
     { immediate: true }
   );
