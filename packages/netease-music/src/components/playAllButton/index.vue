@@ -23,7 +23,7 @@ const addAll = (bool: boolean) => {
   @include red-custom();
   width: 143px;
   box-sizing: border-box;
-  height: 30px;
+  // height: 30px;
   border-radius: 30px;
   display: flex;
   justify-content: center;

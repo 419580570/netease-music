@@ -92,7 +92,6 @@ const logout = () => {
   logOut().then((res: any) => {
     if (res.code === 200) {
       _logout();
-      reload();
     }
   });
 };

@@ -74,8 +74,7 @@ import { ipcRenderer } from "electron";
 import SkinPopover from "./skin.vue";
 import { getVIP } from "@/network/User";
 import { VIPList } from "@/types";
-import { CreateChildWindows } from "@/util";
-import { NNotify as Notify } from "ui/components/notify";
+import { createLoginWindow } from "@/util";
 let isFullScreen = ref<boolean>(false);
 
 const profileStore = useProfileStore();
@@ -108,7 +107,7 @@ const vipLevel = computed(() => {
 /* 登录 */
 const toLogin = () => {
   if (isLogin.value) return;
-  CreateChildWindows("login", 350, 530);
+  createLoginWindow();
 };
 
 /* 最小化窗口 */

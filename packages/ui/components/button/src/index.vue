@@ -28,7 +28,7 @@ export default {
   },
   setup(props, { emit }) {
     const handleClick = () => {
-      emit("handleClick");
+      !props.disabled && emit("handleClick");
     };
 
     return {

@@ -7,7 +7,6 @@
 </template>
 
 <script lang="ts">
-import { clearTimeout } from "timers";
 import { computed, CSSProperties, onMounted, ref } from "vue";
 import { notifyProps } from "./notification";
 

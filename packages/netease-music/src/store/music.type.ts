@@ -11,11 +11,13 @@ export type MusicState = {
   duration: number;
   isMute: boolean;
   lyric: boolean;
+  likeList: Array<number>;
 };
 
 export type MusicGetter = {
   getCurrentSong: (state: MusicState) => songDetail | null;
   getPlayList: (state: MusicState) => songDetail[];
+  getLikeList: (state: MusicState) => number[];
   hasPlayList: (state: MusicState) => boolean;
   getCurrentId: (state: MusicState) => number;
   isEnd: (state: MusicState) => boolean;
@@ -29,8 +31,9 @@ export type _MusicGetter = _StoreWithGetters<{
 }>;
 
 export type MusicActions = {
-  replacePlaylist: (arr: songDetail[]) => void;
+  replacePlaylist: (arr: songDetail[], index?: number) => void;
   addPlayList: (song: songDetail[]) => void;
+  addSong: (song: songDetail) => void;
   changeSong: (id: number | string, index?: boolean) => void;
   cleanPlayList: () => void;
   togglePlayState: (state: boolean) => void;
@@ -41,6 +44,7 @@ export type MusicActions = {
   changeDuration: (val: number) => void;
   toggleMute: (val: boolean) => void;
   toggleLyric: (val: boolean) => void;
+  addLikeList: (list: Array<number>) => void;
 };
 
 export type THIS = ThisType<_MusicGetter & MusicActions & MusicState>;

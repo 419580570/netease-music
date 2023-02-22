@@ -1,7 +1,7 @@
 <template>
   <div class="phonelogin">
     <div class="phonelogin-top">
-      <img src="/src/assets/img/plogin.png" />
+      <img :src="plogin" />
       <div class="changeLogin" @click="changeLogin"></div>
     </div>
     <div class="phonelogin-login">
@@ -108,10 +108,11 @@
 
 <script lang="ts" setup>
 import { getUserDetail, phonelogin } from "@/network/methods";
-import { openExternal, login } from "@/util";
+import { openExternal } from "@/util";
 import { ipcRenderer } from "electron";
 import countryCode from "./countryCode.js";
-import { NNotify as Notify } from "ui/components/notify";
+import { NNotify as Notify } from "ui";
+import plogin from "@/assets/img/plogin.png";
 
 const router = useRouter();
 const phone = ref();
@@ -146,7 +147,7 @@ const Login = () => {
       getUserDetail(res.profile.userId).then((detail: any) => {
         //根据用户id获取用户详情
         ipcRenderer.send("dialog-close");
-        ipcRenderer.send("login", detail);
+        ipcRenderer.send("login", { cookie: res.cookie, ...detail });
         reload();
       });
     } else {

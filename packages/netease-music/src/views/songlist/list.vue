@@ -11,6 +11,7 @@
         :format="format"
         :lineIndex="true"
         :showTitle="true"
+        :is-all="true"
         @handleDbclick="handleDbclick"
       ></TableList>
     </Loading>
@@ -118,11 +119,12 @@ const isLoading = ref(true);
 const route = useRoute();
 const { showdialog } = useDialog();
 const musicStore = useMusicStore();
+let replaceIndex = 0;
 const { getStorage, addStorage } = util();
 const dbclickwarn = ref(JSON.parse(getStorage("dbclickwarn") || "false"));
 // const dbclickwarn = ref(false);
 const format = [
-  { title: "操作", slotName: "operate", width: "50px" },
+  { title: "操作", slotName: "operate", width: "50px", key: ["id"] },
   {
     title: "标题",
     slotName: "name",
@@ -156,10 +158,11 @@ watch(
 );
 
 const handleDbclick = (item: songDetail) => {
+  replaceIndex = item.index;
   if (!dbclickwarn.value) {
     showdialog.value = true;
   } else {
-    musicStore.replacePlaylist(data.value);
+    musicStore.replacePlaylist(data.value, replaceIndex);
   }
 };
 
@@ -169,7 +172,7 @@ const handleDbclickwarn = (val: boolean) => {
 };
 
 const handleContinue = () => {
-  musicStore.replacePlaylist(data.value);
+  musicStore.replacePlaylist(data.value, replaceIndex);
   closeDialog();
 };
 

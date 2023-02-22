@@ -6,7 +6,7 @@
     min-height: 235px;
     position: relative;
     .carousel-container {
-      height:200px;
+      height: 200px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -57,6 +57,7 @@
       border-radius: 50%;
       width: 28px;
       height: 28px;
+      line-height: 25px;
       color: #fff;
       text-align: center;
       opacity: 0;

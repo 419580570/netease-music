@@ -9,9 +9,9 @@ export function CreateChildWindows(url: string, width: number, height: number) {
   // // /IndependentWindow这个路由是在渲染进程创建的承载外部链接的独立窗口的页面
   if (process.env.NODE_ENV === "development") {
     // 判断若为开发环境
-    winURL = process.env.VITE_DEV_SERVER_URL + url;
+    winURL = process.env.VITE_DEV_SERVER_URL + "#" + url;
   } else {
-    winURL = `file://${__dirname}/${url}`;
+    winURL = `file://${__dirname}/index.html#${url}`;
   }
   const main = remote.webContents.fromId(shared.main);
   let childWindow: any = new remote.BrowserWindow({
@@ -34,7 +34,7 @@ export function CreateChildWindows(url: string, width: number, height: number) {
   remote.ipcMain.on("dialog-close", () => {
     childWindow.close();
   });
-  childWindow.webContents.openDevTools();
+  import.meta.env.DEV && childWindow.webContents.openDevTools();
   childWindow.on("closed", () => {
     childWindow = null;
     shared.dialog = null;
@@ -47,4 +47,8 @@ export function CreateChildWindows(url: string, width: number, height: number) {
 
 export function openExternal(url: string) {
   shell.openExternal(url);
+}
+
+export function createLoginWindow() {
+  CreateChildWindows("login", 350, 530);
 }

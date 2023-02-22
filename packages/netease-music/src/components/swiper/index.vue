@@ -1,7 +1,7 @@
 <template>
   <Carousel :carouselData="carouselData" v-bind="$attrs">
     <template #carouselItem="item">
-      <img :src="item.pic" />
+      <img :src="item.pic" @click="imgClick(item)" />
       <div
         class="text"
         :style="{
@@ -16,44 +16,32 @@
 </template>
 
 <script lang="ts" setup>
+import { musicStore } from "@/hooks/store";
+import { getSongDetail } from "@/network/methods";
 import type { carouselData } from "@/types/index";
-const props = defineProps<{
+import { extractFromSongDetail } from "@/util";
+defineProps<{
   carouselData: Array<carouselData>;
 }>();
+const router = useRouter();
 
 async function imgClick(item: carouselData) {
-  if (item.url === null) {
-    // var id = item.encodeId;
-    // const musicDetail = await request("GET", "song/detail", { ids: id });
-    // if (item.typeTitle == "新歌首发") {
-    //   this.$store.commit("addMusic", musicDetail.songs[0]);
-    // } else if (item.typeTitle == "歌单") {
-    //   this.$router.push("/playlistdetail/" + id + "/" + 0);
-    // }
-    return;
+  if (item.url) {
+    window.open(item.url);
+  } else {
+    if (item.typeTitle == "新歌首发" || item.typeTitle == "热歌推荐") {
+      getSongDetail([item.targetId]).then((res: any) => {
+        const song = extractFromSongDetail(
+          res.songs,
+          res.privileges,
+          "",
+          "banner"
+        )[0];
+        musicStore.addSong(song);
+      });
+    } else if (item.typeTitle == "歌单") {
+      router.push(`/songlist/${item.targetId}`);
+    }
   }
-  window.open(item.url);
 }
-// data() {
-//   return {
-//     result: [],
-//   };
-// },
-// methods: {
-//   async getbanner() {
-//     const data = await request("GET", "homepage/block/page", {
-//       refresh: true,
-//     });
-//     this.result = data.data.blocks[0].extInfo.banners;
-//   },
-// },
-// computed: {
-//   isred() {
-//     return "rgb(204,74,74)";
-//   },
-//   isblue() {
-//     return "rgb(74,121,204)";
-//   },
-// },
-// }
 </script>

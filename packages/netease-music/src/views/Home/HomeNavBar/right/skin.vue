@@ -9,12 +9,12 @@
     <!-- 主题 -->
     <div v-show="!themeOrPure" class="skin-content">
       <span
-        style="background-image: url(/src/assets/img/coolblack.png)"
+        :style="`background-image: url(${coolblack}) `"
         @click="changeTheme(0)"
         :class="{ currentPick: currentPick === 'coDark' }"
       />
       <span
-        style="background-image: url(/src/assets/img/officalred.png)"
+        :style="`background-image: url(${officalred}) `"
         @click="changeTheme(1)"
         :class="{ currentPick: currentPick === 'ofRed' }"
       />
@@ -76,6 +76,10 @@ import { useSlideColor } from "@/hooks/useSlideColorPicker";
 import { useCalcRgb } from "./skin";
 import utils from "@/hooks/util";
 import { useProfileStore } from "@/store/index";
+import coDark from "@/assets/img/avatar-coDark.png";
+import ofRed from "@/assets/img/avatar-ofRed.png";
+import coolblack from "@/assets/img/coolblack.png";
+import officalred from "@/assets/img/officalred.png";
 const { addStorage, getStorage } = utils();
 
 const themeOrPure = ref(0);
@@ -90,15 +94,13 @@ const changeTheme = (val: number | string) => {
   if (typeof val == "string") {
     document.documentElement.setAttribute("data-theme", "default");
     document.documentElement.setAttribute("style", `--custom-theme: ${val}`);
-    !profile.isLogin &&
-      (profile.profile.avatarUrl = `/src/assets/img/avatar-ofRed.png`);
+    !profile.isLogin && (profile.profile.avatarUrl = ofRed);
     currentPick.value = val;
     addStorage("color-pick", val);
   } else {
     const type = val ? "ofRed" : "coDark";
     document.documentElement.setAttribute("data-theme", type);
-    !profile.isLogin &&
-      (profile.profile.avatarUrl = `/src/assets/img/avatar-${type}.png`);
+    !profile.isLogin && (profile.profile.avatarUrl = val ? ofRed : coDark);
     currentPick.value = type;
     addStorage("color-pick", type);
   }
@@ -106,11 +108,18 @@ const changeTheme = (val: number | string) => {
 
 onMounted(() => {
   const pick = getStorage("color-pick");
-  const type = pick === "ofRed" || pick === "coDark" ? pick : "default";
-  !profile.isLogin &&
-    (profile.profile.avatarUrl = `/src/assets/img/avatar-${
-      pick !== "ofRed" && pick !== "coDark" ? "ofRed" : pick
-    }.png`);
+  const type =
+    pick === "ofRed" || pick === "coDark" ? pick : pick ? "default" : "ofRed";
+  if (!profile.isLogin) {
+    if (pick === "coDark") {
+      profile.profile.avatarUrl = coDark;
+    } else {
+      profile.profile.avatarUrl = ofRed;
+    }
+  }
+  // (profile.profile.avatarUrl = `/src/assets/img/avatar-${
+  //   pick !== "ofRed" && pick !== "coDark" ? "ofRed" : pick
+  // }.png`);
   document.documentElement.setAttribute("data-theme", type);
   pick !== "custom" &&
     document.documentElement.setAttribute("style", `--custom-theme: ${pick}`);

@@ -15,10 +15,12 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
   const sper = ref("0%");
   const loaded = ref("0%");
   const dragging = ref(false);
+  const loading = ref(false);
   let timer: NodeJS.Timeout | null = null;
 
   /* 切换播放状态 */
   const toggle = (val?: boolean) => {
+    if (loading.value) return;
     /* 正在 */
     if (timer) {
       clearInterval(timer);
@@ -44,6 +46,7 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
     /* 声音渐渐出现 */
     if (audio.value?.paused) {
       audio.value!.play();
+      audio.value!.volume = 0;
       let volume = musicStore.volume / 100;
       timer = setInterval(() => {
         if (audio.value!.volume < volume) {
@@ -62,16 +65,20 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
     if (!audio.value) return;
     if (!audio.value.paused) {
       let volume = musicStore.volume / 100;
-      timer = setInterval(() => {
-        if (audio.value!.volume > 0 && audio.value!.volume >= volume / 10) {
-          audio.value!.volume -= volume / 10;
-        } else {
-          clearInterval(timer!);
-          timer = null;
-          audio.value!.volume = 0;
-          audio.value!.pause();
-        }
-      }, 80);
+      const gap = audio.value.duration - audio.value.currentTime;
+      timer = setInterval(
+        () => {
+          if (audio.value!.volume > 0 && audio.value!.volume >= volume / 10) {
+            audio.value!.volume -= volume / 10;
+          } else {
+            clearInterval(timer!);
+            timer = null;
+            audio.value!.volume = 0;
+            audio.value!.pause();
+          }
+        },
+        gap < 80 ? gap : 80
+      );
     }
   };
 
@@ -82,7 +89,8 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
 
   /* 当音乐缓冲区变化时的回调 */
   const progress = () => {
-    var timeRange = audio.value?.buffered!;
+    if (!audio.value) return;
+    var timeRange = audio.value.buffered!;
     if (!timeRange.length || !musicStore.duration) return;
     loaded.value =
       (timeRange.end(timeRange.length - 1) / musicStore.duration) * 100 + "%";
@@ -98,6 +106,8 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
       musicStore.end();
       isplay.value = false;
       return;
+    } else {
+      loading.value = true;
     }
     next();
   };
@@ -105,15 +115,14 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
   /* 当音乐可以播放时的回调 */
   const ready = () => {
     changeDuration(audio.value?.duration || 0);
-    /* 加载好音乐后显示缓冲条 */
-    progress();
-    /* 页面初始化加载好的音乐不播放 */
-    if (first.value) {
-      first.value = false;
-      return;
-    }
-    toggle(true);
-    isplay.value = true;
+    changeProgress(0);
+    audio.value!.currentTime = 0;
+    audio.value!.play();
+    audio.value!.removeEventListener("canplay", ready);
+  };
+
+  const playing = () => {
+    loading.value = false;
   };
 
   /* 当点击播放条时跳转播放 */
@@ -150,6 +159,10 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
     }
   };
 
+  const error = () => {
+    // url.value && next();
+  };
+
   const time = computed(() => {
     const playtime = musicStore.progress;
     const totaltime = musicStore.duration;
@@ -179,13 +192,25 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
       if (oldval === 0) {
         first.value = false;
       }
-      getURL(val)
-        .then(res => {
-          url.value = res;
-        })
-        .catch(() => {
-          next();
-        });
+      /* 不是初次加载，切歌时重置播放时间 */
+      if (oldval !== undefined) {
+        if (audio.value) {
+          isplay.value = true;
+          loading.value = true;
+          audio.value.addEventListener("canplay", ready);
+        }
+      }
+      if (musicStore.getCurrentSong && musicStore.getCurrentSong.fee === 1) {
+        getURL(val)
+          .then(res => {
+            url.value = res;
+          })
+          .catch(() => {
+            musicStore.end();
+          });
+      } else {
+        url.value = `https://music.163.com/song/media/outer/url?id=${val}.mp3`;
+      }
     },
     { immediate: true }
   );
@@ -195,15 +220,28 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
     val => {
       nextTick(() => {
         if (audio.value) {
-          if (isplay.value === false) {
-            audio.value.volume = 0;
-          } else {
-            audio.value.volume = val / 100;
-          }
+          // if (isplay.value === false) {
+          //   audio.value.volume = 0; //????
+          //   console.log(val);
+          // } else {
+          audio.value.volume = val / 100;
+          // }
         }
       });
     },
     { immediate: true }
+  );
+
+  watch(
+    () => musicStore.hasPlayList,
+    has => {
+      if (!has) {
+        changeProgress(0);
+        if (!audio.value) return;
+        audio.value.currentTime = 0;
+        audio.value.pause();
+      }
+    }
   );
 
   /* 页面加载完成更新播放进度 */
@@ -218,11 +256,13 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
     time,
     sper,
     loaded,
+    loading,
     toggle,
     update,
     ended,
-    ready,
     jump,
     progress,
+    playing,
+    error,
   };
 }

@@ -253,10 +253,13 @@ const getData = () => {
   });
 };
 
-onActivated(() => {
-  console.log("activated");
-  getData();
-});
+watch(
+  () => route.params.id,
+  () => {
+    getData();
+  },
+  { immediate: true }
+);
 
 const getTags = computed(() => {
   return data.playlistDetailData.tags.map((item, index) => ({
@@ -371,6 +374,7 @@ const { isfold, isLoading, playlistDetailData, tabList } = toRefs(data);
       .button {
         display: flex;
         justify-content: space-between;
+        max-width: 550px;
         .buttonitem {
           height: 30px;
           font-size: 14px;

@@ -25,13 +25,14 @@
         width="353px"
         height="calc(100vh - 165px)"
         :disable="hidden"
+        ref="popover"
       >
         <template #reference>
           <Icon type="sousuo"></Icon>
           <input
             type="text"
             @keydown.enter="addHistory($event)"
-            v-model="searchValue"
+            v-model.trim="searchValue"
             :placeholder="searchDefault"
           />
         </template>
@@ -39,6 +40,7 @@
           ref="SearchPopRef"
           :suggestData="suggestData"
           :search-value="searchValue"
+          @handleSearch="handleSearch"
         ></SearchPop>
       </Popover>
     </div>
@@ -66,6 +68,7 @@ const { debounce } = util();
 const SearchPopRef = ref<InstanceType<typeof SearchPop> | null>(null);
 const searchValue = ref("");
 const searchDefault = ref("");
+const popover = ref<any>(null);
 const hidden = ref(false);
 // console.log(window.history.state);
 const prev = ref(window.history.state.back !== "/home");
@@ -78,9 +81,12 @@ getSearchDefault().then((res: any) => {
 });
 /* 获取搜索建议 */
 const getSuggest = debounce(() => {
+  if (!searchValue.value) {
+    hidden.value = false;
+    return;
+  }
   getSearchSuggest(searchValue.value).then((res: any) => {
     if (res.code === 200) {
-      console.log(res);
       if (JSON.stringify(res.result) === "{}") {
         hidden.value = true;
       } else {
@@ -100,6 +106,19 @@ const addHistory = (e: Event) => {
   if (list.indexOf(value) == -1) {
     list.unshift(value);
   }
+
+  router.push(`/search/${value}`);
+  closePopover();
+};
+
+/* 进入搜索页关闭popover */
+const closePopover = () => {
+  popover.value && (popover.value.showPopover = false);
+  musicStore.toggleLyric(false);
+};
+const handleSearch = (keyword: string) => {
+  closePopover();
+  keyword && (searchValue.value = keyword);
 };
 
 const handlePrev = () => {
@@ -140,10 +159,15 @@ watch(router.currentRoute, () => {
   }
 });
 
-watchEffect(() => {
-  const value = searchValue.value;
-  if (!value) return;
-  getSuggest();
+watch(
+  () => searchValue.value,
+  () => {
+    getSuggest();
+  }
+);
+
+defineExpose({
+  closePopover,
 });
 </script>
 
@@ -157,6 +181,7 @@ watchEffect(() => {
   display: flex;
   align-items: center;
   position: relative;
+  transition: opacity 0.4s ease-in-out;
   --button-bg: rgba(0, 0, 0, 0.07);
   --button-fc: rgb(255, 255, 255, 0.7);
   --button-fdc: rgb(255, 255, 255, 0.2);

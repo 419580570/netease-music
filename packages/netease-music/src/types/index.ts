@@ -4,7 +4,7 @@ export interface carouselData {
   url: string | null;
   encodeId: string;
   typeTitle: string;
-  targetId: string | number;
+  targetId: number;
 }
 
 export interface recommendData {
@@ -53,6 +53,7 @@ export type songDetail = {
   picUrl: string;
   plLevel: string;
   mv: number;
+  pop?: number;
   noCopyrightRcmd: {
     type: number;
     typeDesc: string;
@@ -102,3 +103,38 @@ export type VIPList = {
   vipCode: number;
   vipLevel: number;
 };
+
+export interface CommentData {
+  id: number;
+  type: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  pageNo?: number;
+  pageSize?: number;
+  sortType?: 1 | 2 | 3;
+  cursor?: string;
+}
+
+type commentUserDetail = {
+  avatarUrl: string;
+  nickname: string;
+  avatarDetail: {
+    identityIconUrl: string;
+    identityLevel: number;
+    userType: number;
+  } | null;
+  userId: number;
+  vipRights: {
+    associator: {
+      iconUrl: string;
+    } | null;
+  } | null;
+};
+
+export interface CommentItem {
+  beReplied: { content: string; user: commentUserDetail }[];
+  commentId: number;
+  content: string;
+  liked: boolean;
+  likedCount: number;
+  time: number;
+  user: commentUserDetail;
+}

@@ -1,5 +1,10 @@
 import utils from "./util";
-export function useSlideColor(storageKey: string, currentPick: any, profile: any) {
+import ofRed from "@/assets/img/avatar-ofRed.png";
+export function useSlideColor(
+  storageKey: string,
+  currentPick: any,
+  profile: any
+) {
   const { addStorage, getStorage } = utils();
   const ctcolor = ref(Number(getStorage(storageKey)));
   const percent = ref(0);
@@ -10,7 +15,7 @@ export function useSlideColor(storageKey: string, currentPick: any, profile: any
     document.addEventListener("mousemove", handleMove);
     document.addEventListener("mouseup", handleUp);
     addStorage("color-pick", "custom");
-    !profile.isLogin && (profile.profile.avatarUrl = `/src/assets/img/avatar-ofRed.png`)
+    !profile.isLogin && (profile.profile.avatarUrl = ofRed);
     currentPick.value = "custom";
   };
 

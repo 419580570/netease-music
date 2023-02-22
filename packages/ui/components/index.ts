@@ -13,3 +13,4 @@ export * from "./table";
 export * from "./checkbox";
 export * from "./radio";
 export * from "./pagination";
+export * from "./textarea";

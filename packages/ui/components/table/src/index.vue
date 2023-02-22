@@ -1,5 +1,6 @@
 <script lang="ts">
 import { h, ref } from "vue";
+import { NIcon as Icon } from "ui/components";
 
 export default {
   name: "Table",
@@ -31,6 +32,10 @@ export default {
     const lineClick = id => {
       activeLine.value = id;
     };
+    const lineDblclick = item => {
+      emit("dbclick", item);
+    };
+
     const extractKeyFromData = (keys, item) => {
       if (!keys) return undefined;
       const res = {};
@@ -41,15 +46,15 @@ export default {
       return res;
     };
     /* 统一索引格式 */
-    const unifiedIndex = index => {
+    const unifiedIndex = item => {
+      if (props.currentPlay === item.id) {
+        return h(Icon, { type: "laba", size: 15 });
+      }
+      const index = item.index + 1;
       if (index < 10) {
         return `0${index}`;
       }
       return `${index}`;
-    };
-
-    const lineDblclick = item => {
-      emit("dbclick", item);
     };
 
     return () =>
@@ -84,7 +89,7 @@ export default {
               },
               [
                 props.lineIndex &&
-                  h("span", { class: "index" }, unifiedIndex(item.index + 1)),
+                  h("span", { class: "index" }, unifiedIndex(item)),
                 ...props.format?.map(format =>
                   h(
                     "div",
@@ -92,9 +97,10 @@ export default {
                       class: "n-table-content__line__item",
                       style: { width: format.width },
                     },
-                    slots[format.slotName]!(
-                      extractKeyFromData(format.key, item)
-                    )
+                    slots[format.slotName] &&
+                      slots[format.slotName]!(
+                        extractKeyFromData(format.key, item)
+                      )
                   )
                 )!,
               ]
@@ -105,5 +111,3 @@ export default {
   },
 };
 </script>
-
-<style scoped lang="scss"></style>

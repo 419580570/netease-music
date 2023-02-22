@@ -27,10 +27,9 @@ export function useObserve(
           });
         },
         {
-          /* 以lyricRoot为监视根节点，监视范围在中线附近，当目标与监视范围重叠率大于30% */
+          /* 以lyricRoot为监视根节点，监视范围在中线附近 */
           root: lyricRoot.value,
-          rootMargin: `-49% 0px -39% 0px`,
-          threshold: 0.3,
+          rootMargin: `-49.5% 0px -49.5% 0px`,
         }
       );
       lyricRefs.value.forEach(item => {

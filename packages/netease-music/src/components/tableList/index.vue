@@ -1,74 +1,96 @@
 <template>
-  <Table
-    v-bind="$attrs"
-    class="table-wrapper"
-    @dbclick="handleDbclick"
-    :data="filterData"
-    :currentPlay="currentId"
-  >
-    <template #play="item">
-      <Icon
-        :type="playState ? 'bofang' : 'zanting'"
-        v-if="item.id && currentId === item.id"
-      ></Icon
-    ></template>
-    <template #operate="item">
-      <Icon type="xihuan" class="hover"></Icon>
-      <Icon type="xiazai" class="hover"></Icon>
-    </template>
-    <template #name="item">
-      <NameAlia :name="item.name" :alia="item.alia"></NameAlia>
-      <SongTag :song="item" class="songTag"></SongTag>
-    </template>
-    <template #singer="{ ar }">
-      <div class="namegroupWrapper">
-        <NameGroup :ar="ar" class="namegroup"></NameGroup>
-      </div>
-    </template>
-    <template #album="{ al }">
-      <NameAlia
-        :name="al.name"
-        :alia="al.tns"
-        class="namealia hover"
-      ></NameAlia>
-    </template>
-    <template #jump="{ from }">
-      <Icon type="lianjie" class="hover" @click="toDetail(from.id)"></Icon>
-    </template>
-    <template #time="{ dt }">
-      <span class="time">{{ convertTime(dt) }}</span>
-    </template>
-  </Table>
+  <Loading :isLoading="isLoading">
+    <Table
+      v-bind="$attrs"
+      class="table-wrapper"
+      @dbclick="handleDbclick"
+      :data="filterData"
+      :currentPlay="currentId"
+      ref="tableContent"
+    >
+      <template #play="item">
+        <Icon
+          :type="playState ? 'bofang' : 'zanting'"
+          v-if="item.id && currentId === item.id"
+        ></Icon
+      ></template>
+      <template #operate="{ id }">
+        <likeIcon class="hover" :id="id"></likeIcon>
+        <Icon type="xiazai" class="hover"></Icon>
+      </template>
+      <template #name="item">
+        <NameAlia :name="item.name" :alia="item.alia"></NameAlia>
+        <SongTag :song="item" class="songTag"></SongTag>
+      </template>
+      <template #singer="{ ar }">
+        <div class="namegroupWrapper">
+          <NameGroup :ar="ar" class="namegroup"></NameGroup>
+        </div>
+      </template>
+      <template #album="{ al }">
+        <NameAlia
+          :name="al.name"
+          :alia="al.tns"
+          class="namealia hover"
+        ></NameAlia>
+      </template>
+      <template #jump="{ from }">
+        <Icon type="lianjie" class="hover" @click="toDetail(from)"></Icon>
+      </template>
+      <template #time="{ dt }">
+        <span class="time">{{ convertTime(dt) }}</span>
+      </template>
+      <template #pop="{ pop }">
+        <div class="pop" :style="{ '--pop': pop + '%' }"></div>
+      </template>
+    </Table>
+  </Loading>
   <Pagination
     :max="max"
-    :total="data.length"
+    :total="total || data.length"
     @handlePagination="handlePagination"
+    v-show="!isLoading"
   ></Pagination>
 </template>
+
+<script lang="ts">
+export default { inheritAttrs: false };
+</script>
 
 <script lang="ts" setup>
 import SongTag from "@/components/songTag/index.vue";
 import NameGroup from "@/components/nameGroup/index.vue";
 import NameAlia from "@/components/nameAlia/index.vue";
+import likeIcon from "@/components/likeIcon/index.vue";
 import { songDetail } from "@/types";
-// import { useMusicStore } from "@/store";
 import { musicGetters } from "@/hooks/store";
 const { playState, currentId } = musicGetters();
 const router = useRouter();
 
 // const musicStore = useMusicStore();
 const props = withDefaults(
-  defineProps<{ data: songDetail[]; max?: number }>(),
+  defineProps<{
+    data: songDetail[];
+    total?: number;
+    max?: number;
+    isAll?: boolean;
+    isLoading?: boolean;
+    keyword?: string;
+  }>(),
   {
+    total: 0,
     max: 50,
+    isAll: false,
+    isLoading: false,
+    keyword: "",
   }
 );
 
-const emit = defineEmits(["handleDbclick"]);
-
+const emit = defineEmits(["handleDbclick", "handlePagination"]);
 const currentPage = ref(0);
+const tableContent = ref<any>(null);
 const filterData = computed(() => {
-  if (!props.max) return props.data;
+  if (!props.max || !props.isAll) return props.data;
   return (
     props.data &&
     props.data.slice(
@@ -91,15 +113,48 @@ function convertTime(dt: number) {
 
 const handlePagination = (page: number) => {
   currentPage.value = page;
+  emit("handlePagination", currentPage.value);
 };
 
 const handleDbclick = (item: songDetail) => {
   emit("handleDbclick", item);
 };
 
-const toDetail = (from: string) => {
-  router.push(`/songlist/${from}`);
+const toDetail = (from: { id: string; name: string }) => {
+  if (from.name === "搜索页") {
+    router.push(`/search/${from.id}`);
+  } else if (from.name === "banner") {
+    router.push("/discover/recommend");
+  } else {
+    router.push(`/songlist/${from.id}`);
+  }
 };
+
+/* 替换关键词 */
+const replaceKeyword = () => {
+  nextTick(() => {
+    const dom1 = tableContent.value!.$el.querySelectorAll(".name");
+    const dom2 = tableContent.value!.$el.querySelectorAll(".nameGroup-item");
+    console.log(dom1, dom2);
+    [...dom1, ...dom2].forEach(item => {
+      item.innerHTML = item.innerHTML.replaceAll(
+        props.keyword,
+        `<span class="keyword">${props.keyword}</span>`
+      );
+    });
+    // if (!dom) return;
+  });
+};
+
+watch(
+  [() => props.isLoading, () => props.keyword],
+  ([load, keyword]) => {
+    if (!load && keyword) {
+      replaceKeyword();
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped lang="scss">
@@ -108,7 +163,11 @@ const toDetail = (from: string) => {
   :deep(.index) {
     @include font-color-desc();
   }
+  :deep(.keyword) {
+    @include font-color-blue();
+  }
   .xihuan,
+  .xihuan-fill,
   .xiazai {
     cursor: pointer;
     margin-left: 6px;
@@ -152,6 +211,27 @@ const toDetail = (from: string) => {
     font-size: 12px;
     // letter-spacing: 0.5px;
     @include font-color-number();
+  }
+  .pop {
+    height: 5px;
+    border-radius: 3px;
+    width: 100%;
+    @include themeify {
+      background-color: themed("carousel-button");
+    }
+    position: relative;
+    overflow: hidden;
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      height: 100%;
+      width: var(--pop);
+      background-color: rgb(202, 202, 202);
+      @include darkTheme {
+        background-color: rgb(68, 68, 68);
+      }
+    }
   }
 }
 .n-pagination {

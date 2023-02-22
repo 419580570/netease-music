@@ -61,7 +61,7 @@ const tags = computed(() => {
     display: inline-block;
     height: 10px;
     line-height: 11px;
-    padding: 0 1px;
+    padding: 0px 1px;
     text-shadow: 0px 0px 0.8px var(--color);
     box-shadow: 0px 0px 0.8px var(--color);
     // transform: scaleX(1.1);
@@ -73,7 +73,7 @@ const tags = computed(() => {
     @include red-custom("--color");
   }
   > .SQ {
-    transform: scaleX(1.2);
+    transform: scaleX(1.1);
     // letter-spacing: 0.5px;
   }
   .VIP {

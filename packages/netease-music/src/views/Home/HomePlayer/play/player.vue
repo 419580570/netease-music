@@ -1,5 +1,5 @@
 <template>
-  <div class="player">
+  <div class="player" :class="{ no: !hasPlayList }">
     <div class="player-button">
       <Icon :type="cutway" @click="togglePlayMode"></Icon>
       <Icon type="shangyishou" @click="last"></Icon>
@@ -11,10 +11,16 @@
       <span class="ci">词</span>
     </div>
     <div class="player-progress">
-      <div class="currentTime">{{ time.playTime }}</div>
+      <div class="currentTime">{{ loading ? "00:00" : time.playTime }}</div>
       <div class="progress" @mousedown="jump">
-        <div class="progress-loading" :style="{ '--loaded': loaded }"></div>
-        <div class="progress-done" :style="{ '--width': sper }"></div>
+        <div
+          class="progress-loading"
+          :style="{ '--loaded': !hasPlayList ? '100%' : loaded }"
+        ></div>
+        <div
+          class="progress-done"
+          :style="{ '--width': loading || !hasPlayList ? '0%' : sper }"
+        ></div>
         <audio
           :src="url"
           :loop="loop"
@@ -22,8 +28,9 @@
           preload="auto"
           @timeupdate="update"
           @ended="ended"
-          @canplay="ready"
           @progress="progress"
+          @playing="playing"
+          @error="error"
           ref="audio"
         ></audio>
       </div>
@@ -33,9 +40,10 @@
 </template>
 
 <script lang="ts" setup>
-import { musicStore } from "@/hooks/store";
+import { musicGetters, musicStore } from "@/hooks/store";
 import useCutSong from "./useCutSong";
 import usePlay from "./usePlay";
+const { hasPlayList } = musicGetters();
 const { cutway, togglePlayMode, last, next, loop } = useCutSong();
 const {
   url,
@@ -44,12 +52,14 @@ const {
   time,
   sper,
   loaded,
+  loading,
   toggle,
   update,
   ended,
-  ready,
   jump,
   progress,
+  playing,
+  error,
 } = usePlay(next, cutway);
 </script>
 
@@ -197,6 +207,14 @@ const {
           @include red_custom();
         }
       }
+    }
+  }
+  &.no {
+    pointer-events: none;
+    opacity: 0.5;
+    .currentTime,
+    .totalTime {
+      visibility: hidden;
     }
   }
 }

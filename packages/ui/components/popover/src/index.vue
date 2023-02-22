@@ -12,6 +12,7 @@
       width: wrapperWidth,
       height: wrapperHeight,
       left: move,
+      ...$attrs.style as any
     }"
   >
     <slot></slot>

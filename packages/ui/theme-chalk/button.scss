@@ -24,6 +24,14 @@
     &:hover {
       background-color: rgba(255, 255, 255);
     }
+    &.red-theme {
+      opacity: 0.5;
+      &:hover {
+        &:hover::after {
+          opacity: 0;
+        }
+      }
+    }
   }
   &.red-theme {
     background-color: rgb(234, 72, 72) !important;

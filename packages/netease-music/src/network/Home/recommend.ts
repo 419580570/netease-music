@@ -1,14 +1,12 @@
 import { get } from "../axios";
 
 export function getCarouselData() {
-  return get("homepage/block/page", {
-    refresh: true,
-  });
+  return get("/banner");
 }
 
-export function getRecommendData(data: any) {
+export function getRecommendData(limit: number) {
   return get("personalized", {
-    limit: data.limit,
+    limit,
   });
 }
 

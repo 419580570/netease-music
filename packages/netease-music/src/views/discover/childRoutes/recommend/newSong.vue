@@ -1,8 +1,12 @@
 <template>
   <div class="newsong">
-    <div v-for="item in data" class="newsong-item">
+    <div v-for="item in data" class="newsong-item" @click="addSong(item)">
       <div class="album">
-        <img :src="item.picUrl" />
+        <!-- 限制图片大小，防止滚动卡 -->
+        <ImgLoad
+          :src="item.picUrl + '?param=49y49'"
+          class="album-img"
+        ></ImgLoad>
         <PlayButton class="button"></PlayButton>
       </div>
       <div class="info">
@@ -22,8 +26,13 @@ import PlayButton from "@/components/playButton/index.vue";
 import SongTag from "@/components/songTag/index.vue";
 import NameGroup from "@/components/nameGroup/index.vue";
 import NameAlia from "@/components/nameAlia/index.vue";
+import ImgLoad from "@/components/imgload/index.vue";
+import { musicStore } from "@/hooks/store";
 
 defineProps<{ data: songDetail[] }>();
+const addSong = (item: songDetail) => {
+  musicStore.addSong(item);
+};
 </script>
 
 <style scoped lang="scss">
@@ -34,8 +43,9 @@ defineProps<{ data: songDetail[] }>();
   justify-content: space-between;
   flex-wrap: wrap;
   height: 240px;
+  position: relative;
   &-item {
-    flex-basis: 49px;
+    // flex-basis: 49px;
     width: calc(100% / 3 - 12px);
     display: flex;
     align-items: flex-start;
@@ -55,7 +65,7 @@ defineProps<{ data: songDetail[] }>();
         left: 50%;
         transform: translateX(-52%) translateY(-55%);
       }
-      img {
+      :deep(.album-img) {
         display: block;
         width: 49px;
         height: 49px;

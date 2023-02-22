@@ -10,7 +10,7 @@
         </div>
         <div class="historyList" :class="{ isFold: isFold }">
           <div class="historyItem" v-for="(item, index) in historyList">
-            <Button size="12px"
+            <Button size="12px" @handleClick="toSearchDetail(item)"
               >{{ item }}
               <Icon type="exit" :size="10" @click="deleteHistory(index)"></Icon
             ></Button>
@@ -21,7 +21,11 @@
       <div class="search-hot">
         <div class="title">热搜榜</div>
         <ul class="search-hotlist">
-          <li class="search-hotlist__item" v-for="(item, index) in hotList">
+          <li
+            class="search-hotlist__item"
+            v-for="(item, index) in hotList"
+            @click="toSearchDetail(item.searchWord)"
+          >
             <div class="index">{{ index + 1 }}</div>
             <div class="content">
               <div class="head">
@@ -47,7 +51,12 @@
         <Icon type="musicalnote" :size="25"></Icon>
         <span class="title">单曲</span>
         <ul class="list">
-          <li v-for="item in suggestData!.songs">{{ parseItem(item) }}</li>
+          <li
+            v-for="item in suggestData!.songs"
+            @click="handleAddSearchMuiscClick(item)"
+          >
+            {{ parseItem(item) }}
+          </li>
         </ul>
       </div>
       <div class="group" v-show="suggestData!.artists">
@@ -76,8 +85,11 @@
 </template>
 
 <script lang="ts" setup>
-import { getSearchList } from "@/network/methods";
+import { getSearchList, getSongDetail } from "@/network/methods";
 import util from "@/hooks/util";
+import { musicStore } from "@/hooks/store";
+import { extractFromSongDetail } from "@/util";
+import { songDetail } from "@/types";
 
 export type hotListData = {
   alg: string;
@@ -90,14 +102,15 @@ export type hotListData = {
   url: string;
 };
 
-const { getStorage, addStorage, debounce } = util();
+const { getStorage, addStorage } = util();
 
 const historyList = ref(JSON.parse(getStorage("historyList") || "[]"));
-
 const hotList = ref<hotListData[]>([]);
 const isFold = ref(true);
+const router = useRouter();
 
 const prop = defineProps(["searchValue", "suggestData"]);
+const emit = defineEmits(["handleSearch"]);
 // const emit = defineEmits(["update:hidden"]);
 /* 获取搜索热词 */
 getSearchList().then((res: any) => {
@@ -120,6 +133,19 @@ const deleteHistory = (index: number) => {
 const cleanHistory = () => {
   historyList.value.length = 0;
 };
+/* 添加搜索到的歌曲 */
+const handleAddSearchMuiscClick = (item: any) => {
+  getSongDetail([item.id]).then((res: any) => {
+    const song = extractFromSongDetail(
+      res.songs,
+      res.privileges,
+      item.name,
+      "搜索页"
+    )[0];
+    musicStore.addSong(song);
+    emit("handleSearch");
+  });
+};
 
 const parseItem = (item: any) => {
   let res = item.name;
@@ -133,6 +159,11 @@ const parseItem = (item: any) => {
   } else {
     return res;
   }
+};
+
+const toSearchDetail = (keyword: string) => {
+  router.push(`/search/${keyword}`);
+  emit("handleSearch", keyword);
 };
 
 watch(historyList.value, value => {

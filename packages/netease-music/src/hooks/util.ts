@@ -27,9 +27,9 @@ export default function () {
     const numStr = num + "";
     if (numStr.length < numlength) {
       return num;
-    } else if (numStr.length > numlength - 1) {
+    } else if (numStr.length >= numlength && numStr.length < 9) {
       return parseInt(num / 10000 + "") + "万";
-    } else if (numStr.length > 8) {
+    } else if (numStr.length >= 9) {
       return parseInt(num / 10 ** 8 + "") + "亿";
     }
   };

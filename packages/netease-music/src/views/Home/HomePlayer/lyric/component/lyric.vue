@@ -1,22 +1,28 @@
 <template>
   <div class="lr" ref="lyricRoot">
-    <div class="lr-main" ref="lyricWrapper" @mousewheel="handleWheel">
+    <!-- 歌词 -->
+    <div class="lr-main" ref="lyricWrapper" @mousewheel.passive="handleWheel">
       <Loading :isLoading="loading">
         <ul class="lyric-wrapper">
+          <li class="lyric-item" v-if="!canScroll">"改歌词不支持自动滚动"</li>
           <li
             class="lyric-item"
-            v-for="(item, key) in lyricMap"
+            v-for="(item, key, index) in lyricMap"
             :class="{
               hover:
                 key === hoverLyric && showJumpLine && !key.includes('User'),
               active: key === activeLyric || key === 'InfinityUser',
+              bold: translate,
             }"
             :data-time="key"
             ref="lyricRefs"
           >
             <span v-if="key === 'InfinityUser' || !key.includes('User')"
               >{{ item }}
-              <div class="translate" v-if="translate && tlyricMap">
+              <div
+                class="translate"
+                v-if="translate && tlyricMap && tlyricMap[key]"
+              >
                 {{ tlyricMap[key] }}
               </div></span
             >
@@ -32,6 +38,7 @@
         </ul>
       </Loading>
     </div>
+    <!-- 右侧按钮 -->
     <div class="lr-buttons">
       <div class="add button" title="后退0.5s" @click="reduce">
         <Icon type="prev" :size="10"></Icon>
@@ -49,9 +56,10 @@
       </div>
       <div class="more button" title="报错">...</div>
     </div>
+    <!-- 跳转线 -->
     <div
       class="lr-hover"
-      v-show="showJumpLine"
+      v-show="canScroll && showJumpLine"
       :class="{ disable: hoverLyric.includes('User') }"
     >
       <div class="time">
@@ -66,184 +74,48 @@
 </template>
 
 <script lang="ts" setup>
-import { musicGetters, musicStore } from "@/hooks/store";
+import { useObserve } from "../hooks/useObserve";
+import { useLyric } from "../hooks/useLyric";
 import { getLyric } from "@/network/methods";
-import { NNotify as notify } from "ui";
+import { musicGetters } from "@/hooks/store";
 import util from "@/hooks/util";
-import { useObserve } from "./useObserve";
 
 const loading = ref(true);
-const lyricMap = ref<Record<string, any>>({}); /* 歌词 */
-const tlyricMap = ref<Record<string, any> | null>(null); /* 翻译 */
-const activeLyric = ref("0"); /* 当前播放歌词 */
-const hoverLyric = ref("0"); /* 可跳转歌词（滚动） */
 const lyricWrapper = ref<HTMLElement | null>(null);
 const lyricRoot = ref<HTMLElement | null>(null);
 const lyricRefs = ref<HTMLElement[]>([]);
-const deviation = ref(0); /* 歌词跟随偏移时间 */
-const showJumpLine = ref(false); /* 是否显示跳转线 */
-const translate = ref(true); /* 是否开启歌词翻译 */
-const { currentId } = musicGetters();
 const { parsePlayTime } = util();
+const { currentId } = musicGetters();
+const {
+  hoverLyric,
+  activeLyric,
+  currentLyric,
+  canScroll,
+  showJumpLine,
+  tlyricMap,
+  lyricMap,
+  translate,
+  parseLyric,
+  add,
+  reduce,
+  handleWheel,
+  jump,
+  showTranslate,
+} = useLyric(lyricWrapper, lyricRoot, lyricRefs);
 const { stopObserve, addObserve } = useObserve(
   lyricRefs,
   hoverLyric,
   lyricRoot
 );
-let scrollTimer: NodeJS.Timeout; /* 歌词滚动 */
-let waitTimer: NodeJS.Timeout; /* 歌词定位滚动延迟 */
-let jumpLineTimer: NodeJS.Timeout; /* 滚动歌词跳转线显示-隐藏延迟 */
-
-/* 歌词解析 */
-const parseLyric = (res: any) => {
-  const lyric: string = res.lrc.lyric;
-  lyricMap.value = {};
-  if (lyric) {
-    const parse = (lyric: string, map: any) => {
-      const lyricArr = (lyric || "").split("[").slice(1);
-      lyricArr.forEach(item => {
-        const arr = (item || "").split("]");
-        if (res.lrc.version === 1) {
-          map["InfinityUser"] = arr[1];
-          return;
-        }
-        const m = parseInt((arr[0] || "").split(":")[0]);
-        const s = parseInt((arr[0] || "").split(":")[1]);
-        let ms = parseInt((arr[0] || "").split(".")[1]);
-        ms = ms >= 333 && ms <= 666 ? 0.5 : ms < 333 ? 0 : 1;
-        const key = m * 60 + s + ms; /* 时间 */
-        const val = arr[1] == "\n" ? "" : arr[1].slice(0, -1); /* 歌词 */
-
-        map[key.toFixed(1)] = val;
-      });
-    };
-
-    parse(lyric, lyricMap.value);
-    if (res.tlyric && res.tlyric.lyric) {
-      tlyricMap.value = {};
-      parse(res.tlyric.lyric, tlyricMap.value);
-      if (res.transUser) {
-        tlyricMap.value["transUser"] = res.transUser;
-      }
-    } else {
-      tlyricMap.value = null;
-    }
-
-    if (res.lyricUser) {
-      lyricMap.value["lyricUser"] = res.lyricUser;
-    }
-  } else {
-  }
-};
-
-/* 歌词滚动动画 */
-const scrollAnimation = () => {
-  nextTick(() => {
-    if (!lyricWrapper.value) return;
-    if (scrollTimer) clearInterval(scrollTimer);
-    if (waitTimer) clearTimeout(waitTimer);
-    const lyricItem: any = lyricWrapper.value.querySelector(".active");
-    if (!lyricItem) return;
-    let newTop =
-      lyricItem.offsetTop -
-      lyricItem.offsetParent.offsetHeight / 2 +
-      lyricItem.offsetHeight / 2;
-    newTop = newTop >= 0 ? newTop : 0;
-    const oldTop = Math.round(lyricWrapper.value.scrollTop);
-    const gap = (newTop - oldTop) / 50;
-
-    waitTimer = setTimeout(() => {
-      scrollTimer = setInterval(() => {
-        if (gap > 0) {
-          if (lyricWrapper.value!.scrollTop > newTop) {
-            lyricWrapper.value!.scrollTop = newTop;
-            clearInterval(scrollTimer);
-            return;
-          }
-          lyricWrapper.value!.scrollTop += gap >= 1 ? gap : 1;
-        } else {
-          if (lyricWrapper.value!.scrollTop < newTop) {
-            lyricWrapper.value!.scrollTop = newTop;
-            clearInterval(scrollTimer);
-            return;
-          }
-          lyricWrapper.value!.scrollTop += gap <= -1 ? gap : -1;
-        }
-      }, 5);
-    }, 300);
-  });
-};
-
-/* 增加歌词跟随偏移时间 */
-const add = () => {
-  deviation.value += 0.5;
-  notify({
-    duration: 1000,
-    position: "center",
-    size: 18,
-    message: `${
-      deviation.value > 0 ? "+" + deviation.value : deviation.value
-    }S`,
-    style: {
-      padding: "12px 20px",
-      borderRadius: "25px",
-      letterSpacing: "3px",
-    },
-  });
-};
-
-/* 减小歌词跟随偏移时间 */
-const reduce = () => {
-  deviation.value -= 0.5;
-  notify({
-    duration: 1000,
-    position: "center",
-    size: 18,
-    message: `${
-      deviation.value > 0 ? "+" + deviation.value : deviation.value
-    }S`,
-    style: {
-      padding: "12px 20px",
-      borderRadius: "25px",
-      letterSpacing: "3px",
-    },
-  });
-};
-
-/* 滚动歌词 */
-const handleWheel = (e: MouseEvent) => {
-  if (showJumpLine.value) clearTimeout(jumpLineTimer);
-  if (scrollTimer) clearInterval(scrollTimer);
-  showJumpLine.value = true;
-  jumpLineTimer = setTimeout(() => {
-    showJumpLine.value = false;
-    scrollAnimation();
-  }, 3000);
-};
-
-/* 跳转 */
-const jump = () => {
-  if (hoverLyric.value.includes("User")) return;
-  const audio = document.querySelector("audio");
-  if (!audio) return;
-  clearTimeout(jumpLineTimer);
-  showJumpLine.value = false;
-  audio.currentTime = Number(hoverLyric.value);
-};
-
-/* 切换是否翻译 */
-const showTranslate = () => {
-  translate.value = !translate.value;
-  scrollAnimation();
-};
 
 /* 监听当前歌曲ID，加载对应歌词 */
 watch(
   () => currentId.value,
   val => {
+    if (!val) return;
     loading.value = true;
-    // lyricWrapper.value && (lyricWrapper.value.scrollTop = 0);
-    // console.log(lyricWrapper.value);
+    const audio = document.querySelector("audio");
+    audio && audio.pause(); //坑 切歌时暂停，要不进度会更新
     getLyric(val).then((res: any) => {
       if (res.code === 200) {
         loading.value = false;
@@ -255,38 +127,11 @@ watch(
   },
   { immediate: true }
 );
-
-/* 更新当前播放歌词 */
-watch(
-  [
-    () => musicStore.progress,
-    lyricMap /* 监听歌词的变化，刚载入时更新当前歌词位置 */,
-  ],
-  ([newl, newm], [oldl, oldm]) => {
-    if (!Object.keys(lyricMap.value).length) return;
-    if (newm !== oldm && Object.keys(oldm).length) return;
-    let val = Math.round(musicStore.progress * 2) / 2 + deviation.value;
-    while (lyricMap.value[val.toFixed(1)] === undefined && val > 0) {
-      val -= 0.5;
-    }
-    activeLyric.value = val.toFixed(1);
-  }
-);
-
-/* 监听播放歌词，执行定位跳转动画 */
-watch(
-  activeLyric,
-  lyric => {
-    if (lyricMap.value[lyric] && !showJumpLine.value) {
-      scrollAnimation();
-    }
-  },
-  { immediate: true }
-);
-
 onBeforeUnmount(() => {
   stopObserve();
 });
+
+defineExpose(currentLyric);
 </script>
 
 <style scoped lang="scss">
@@ -305,16 +150,6 @@ onBeforeUnmount(() => {
       display: flex;
     }
   }
-  // &::after {
-  //   content: "";
-  //   position: absolute;
-  //   bottom: 39%;
-  //   width: 100%;
-  //   background-color: red;
-  //   height: 45px;
-  // }
-  // mask-position: top;
-  // display: flex;
   &-main {
     height: 100%;
     overflow-y: scroll;
@@ -345,6 +180,11 @@ onBeforeUnmount(() => {
     }
     .lyric-wrapper {
       padding: 154px 0 166px;
+      // position: relative;
+      // .noScroll {
+      //   position: absolute;
+      //   @include font-color-lyric();
+      // }
       .lyric-item {
         font-size: 14px;
         line-height: 26px;
@@ -353,14 +193,17 @@ onBeforeUnmount(() => {
         @include font-color-lyric();
         &.active {
           font-size: 16px;
-          font-weight: bold;
+          font-weight: 800;
           .translate {
             font-size: 14px;
             font-weight: normal;
           }
+          // &.bold {
+          //   font-weight: 800;
+          // }
         }
         &.hover {
-          font-weight: bold;
+          font-weight: 800;
           .translate {
             font-weight: normal;
           }

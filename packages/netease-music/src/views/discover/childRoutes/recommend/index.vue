@@ -9,6 +9,7 @@
           :fixed="5"
           :playButton="true"
           @contentClick="toDetail"
+          @playAllButtonClick="handleClick"
         />
       </div>
       <div class="recommendItem">
@@ -59,10 +60,21 @@ import {
   getSongDetail,
   getrcMV,
 } from "@/network/methods";
-import type { homeDataType, rcMVData } from "@/types/index";
+import type {
+  homeDataType,
+  rcMVData,
+  recommendData,
+  songDetail,
+} from "@/types/index";
 import { extractFromSongDetail } from "@/util";
+import { useProfileStore } from "@/store";
+import daily from "@/assets/img/daily.png";
+
+import util from "@/hooks/util";
 
 const router = useRouter();
+const profile = useProfileStore();
+const { debounce } = util();
 
 const homeData: homeDataType = reactive({
   /* 首页轮播图数据 */
@@ -79,89 +91,119 @@ const homeData: homeDataType = reactive({
 /* 加载中 */
 let isLoading = ref(true);
 
-let promises = [
-  getCarouselData(),
-  getDailyRecommend(),
-  getPrivatecontent(),
-  geNewSong(),
-  getrcMV(),
-];
+const getData = () => {
+  isLoading.value = true;
+  let promises = [
+    getCarouselData(),
+    profile.isLogin ? getDailyRecommend() : getRecommendData(10),
+    getPrivatecontent(),
+    geNewSong(),
+    getrcMV(),
+  ];
 
-Promise.allSettled(promises).then((results: any) => {
-  isLoading.value = false;
-  results.forEach((result: any, index: number) => {
-    switch (index) {
-      case 0:
-        homeData.HomepageBanner =
-          result.value.data.blocks[0].extInfo.banners.map((item: any) => {
-            return {
-              pic: item.pic || item.imageUrl,
-              titleColor: item.titleColor,
-              url: item.url,
-              encodeId: item.encodeId,
-              typeTitle: item.typeTitle,
-              targetId: item.targetId,
-            };
-          });
-        break;
-      case 1:
-        const res = result.value.recommend.slice(0, 9).map((item: any) => {
-          return {
-            id: item.id,
-            name: item.name,
-            picUrl: item.picUrl,
-            playCount: item.playCount,
-          };
-        });
-        res.unshift({
-          id: 1,
-          name: "每日歌曲推荐",
-          picUrl: "/src/assets/img/daily.png",
-          copywriter: "根据您的音乐口味生成每日更新",
-        });
-        homeData.HomepageBlockPlaylistRcmd = res;
-        break;
-      case 2:
-        if (result.value.code === 200) {
-          homeData.HomepagePrivateContent = result.value.result.map(
-            (item: any) => ({
-              name: item.name,
-              picUrl: item.sPicUrl,
-            })
-          );
+  Promise.allSettled(promises).then((results: any) => {
+    try {
+      results.forEach((result: any, index: number) => {
+        switch (index) {
+          case 0:
+            if (result.value.code !== 200) return;
+            homeData.HomepageBanner = result.value.banners.map((item: any) => {
+              return {
+                pic: item.pic || item.imageUrl,
+                titleColor: item.titleColor,
+                url: item.url,
+                encodeId: item.encodeId,
+                typeTitle: item.typeTitle,
+                targetId: item.targetId,
+              };
+            });
+            break;
+          case 1:
+            if (result.value.code !== 200) return;
+            const res = result.value[profile.isLogin ? "recommend" : "result"]
+              .slice(0, 9)
+              .map((item: any) => {
+                return {
+                  id: item.id,
+                  name: item.name,
+                  picUrl: item.picUrl,
+                  playCount: item.playCount || item.playcount,
+                };
+              });
+            res.unshift({
+              id: 1,
+              name: "每日歌曲推荐",
+              picUrl: daily,
+              copywriter: "根据您的音乐口味生成每日更新",
+            });
+            homeData.HomepageBlockPlaylistRcmd = res;
+            break;
+          case 2:
+            if (result.value.code === 200) {
+              homeData.HomepagePrivateContent = result.value.result.map(
+                (item: any) => ({
+                  name: item.name,
+                  picUrl: item.sPicUrl,
+                })
+              );
+            }
+            break;
+          case 3:
+            const data = result.value.data
+              .slice(0, 12)
+              .map((item: any) => item.id);
+            getSongDetail(data).then((res: any) => {
+              if (res.code === 200) {
+                homeData.HomepageNewSong = extractFromSongDetail(
+                  res.songs,
+                  res.privileges
+                );
+              }
+            });
+            break;
+          case 4:
+            if (result.value.code === 200) {
+              homeData.HomepageRCMV = result.value.result.map((item: any) => ({
+                id: item.id,
+                name: item.name,
+                picUrl: item.picUrl + "?param=418y235",
+                playCount: item.playCount,
+                artists: item.artists,
+                copywriter: item.copywriter,
+              }));
+            }
+            break;
         }
-        break;
-      case 3:
-        const data = result.value.data.slice(0, 12).map((item: any) => item.id);
-        getSongDetail(data).then((res: any) => {
-          if (res.code === 200) {
-            homeData.HomepageNewSong = extractFromSongDetail(
-              res.songs,
-              res.privileges
-            );
-          }
-        });
-        break;
-      case 4:
-        if (result.value.code === 200) {
-          homeData.HomepageRCMV = result.value.result.map((item: any) => ({
-            id: item.id,
-            name: item.name,
-            picUrl: item.picUrl,
-            playCount: item.playCount,
-            artists: item.artists,
-            copywriter: item.copywriter,
-          }));
-        }
-        break;
+      });
+      isLoading.value = false;
+    } catch (e) {
+      isLoading.value = false;
     }
   });
-});
+};
 
 function toDetail(item: any) {
-  console.log(item);
   router.push(`/songlist/${item.id}`);
 }
+
+function handleClick(item: recommendData) {
+  router.push(`/songlist/${item.id}`);
+  console.log(item);
+}
+
+// watch(
+//   () => profile.isLogin,
+//   () => {
+//     getData();
+//   }
+// );
+
+/* 等判断登录成功 */
+onMounted(() => {
+  setTimeout(() => {
+    getData();
+  }, 500);
+});
 </script>
 
 <style scoped lang="scss">

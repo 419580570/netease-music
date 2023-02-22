@@ -1,6 +1,9 @@
 import { defineStore } from "pinia";
+import coDark from "@/assets/img/avatar-coDark.png";
+import ofRed from "@/assets/img/avatar-ofRed.png";
 
 interface profile {
+  cookie: string;
   accountStatus: number;
   allSubscribedCount: number;
   artistIdentity: Array<any>;
@@ -61,9 +64,7 @@ interface profile {
 
 const profile: Partial<profile> = {
   avatarUrl:
-    document.documentElement.dataset.theme === "coDark"
-      ? "/src/assets/img/avatar-coDark.png"
-      : "/src/assets/img/avatar-ofRed.png",
+    document.documentElement.dataset.theme === "coDark" ? coDark : ofRed,
   nickname: "未登录",
 };
 

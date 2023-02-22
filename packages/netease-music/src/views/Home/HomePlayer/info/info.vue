@@ -8,7 +8,7 @@
       <div class="info-buttons">
         <div class="down" @click="toggleLyric"></div>
         <div class="buttons">
-          <Button><Icon type="xihuan" :size="19"></Icon></Button>
+          <Button> <likeIcon :size="19" :id="info.id"></likeIcon></Button>
           <Button><Icon type="tianjia" :size="19"></Icon></Button>
           <Button><Icon type="xiazai1" :size="19"></Icon></Button>
           <Button><Icon type="fenxiang1" :size="19"></Icon></Button>
@@ -29,7 +29,14 @@
             </div>
             <!-- <div v-if="info.fee === 1" class="vip">VIP</div> -->
             <div class="vip" v-if="info.fee === 1">VIP</div>
-            <Icon type="xihuan" class="hover"></Icon>
+            <likeIcon class="hover" :id="info.id"></likeIcon>
+            <!-- <Icon
+              :type="
+                musicStore.getLikeList.includes(info.id)
+                  ? 'xihuan-fill'
+                  : 'xihuan'
+              "
+            ></Icon> -->
           </div>
           <div class="ar">
             <NameGroup :ar="info.ar"></NameGroup>
@@ -44,6 +51,7 @@
 <script lang="ts" setup>
 import NameAlia from "@/components/nameAlia/index.vue";
 import NameGroup from "@/components/nameGroup/index.vue";
+import likeIcon from "@/components/likeIcon/index.vue";
 import { musicGetters, musicStore } from "@/hooks/store";
 const { currentSong: info, hasPlayList: haveSong, isEnd } = musicGetters();
 const nameAlia = ref<HTMLElement | null>(null);
@@ -233,11 +241,12 @@ onBeforeUnmount(() => {
         //     transform: translateX(calc(-1 * (50% + 7.5px)));
         //   }
         // }
-        .xihuan {
+        .xihuan,
+        .xihuan-fill {
           cursor: pointer;
           font-size: 19px;
           margin-left: 8px;
-          transform: translateY(1px);
+          // transform: translateY(1px);
           @include font-color();
         }
       }

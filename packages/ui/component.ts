@@ -12,6 +12,7 @@ import { NTable } from "ui/components/table";
 import { NCheckbox } from "ui/components/checkbox";
 import { NRadio } from "ui/components/radio";
 import { NPagination } from "ui/components/pagination";
+import { NTextarea } from "ui/components/textarea";
 import type { Plugin } from "vue";
 
 export default [
@@ -29,4 +30,5 @@ export default [
   NCheckbox,
   NRadio,
   NPagination,
+  NTextarea,
 ] as Plugin[];

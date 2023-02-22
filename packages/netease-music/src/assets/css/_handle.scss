@@ -135,6 +135,11 @@
     #{$key}: themed("split-line");
   }
 }
+@mixin split-line-shallow($key: "background-color") {
+  @include themeify {
+    #{$key}: themed("split-line-shallow");
+  }
+}
 @mixin player-bg() {
   @include themeify {
     background-color: themed("player-bg");
@@ -159,5 +164,11 @@
     &::-webkit-scrollbar-corner {
       background-color: transparent;
     }
+  }
+}
+
+@mixin darkTheme {
+  [data-theme="coDark"] & {
+    @content;
   }
 }

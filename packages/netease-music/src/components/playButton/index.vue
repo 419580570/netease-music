@@ -1,6 +1,15 @@
 <template>
-  <span class="play-button" v-bind="$attrs"><Icon type="you"></Icon></span>
+  <span class="play-button" v-bind="$attrs" @click="handleClick"
+    ><Icon type="you"></Icon
+  ></span>
 </template>
+
+<script lang="ts" setup>
+const emit = defineEmits(["playAllButtonClick"]);
+const handleClick = () => {
+  emit("playAllButtonClick");
+};
+</script>
 
 <style scoped lang="scss">
 .play-button {

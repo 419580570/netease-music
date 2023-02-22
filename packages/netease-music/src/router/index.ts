@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -73,23 +73,23 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "/broadcast",
-        component: () => import("@/views/broadcast/index.vue")
+        component: () => import("@/views/broadcast/index.vue"),
       },
       {
         path: "/video",
-        component: () => import("@/views/video/index.vue")
+        component: () => import("@/views/video/index.vue"),
       },
       {
         path: "/interest",
-        component: () => import("@/views/interest/index.vue")
+        component: () => import("@/views/interest/index.vue"),
       },
       {
         path: "/live",
-        component: () => import("@/views/live/index.vue") 
+        component: () => import("@/views/live/index.vue"),
       },
       {
         path: "/private",
-        component: () => import("@/views/private/index.vue") 
+        component: () => import("@/views/private/index.vue"),
       },
       {
         path: "/songlist/:id",
@@ -112,6 +112,10 @@ const routes: Array<RouteRecordRaw> = [
           },
         ],
       },
+      {
+        path: "/search/:keyword",
+        component: () => import("@/views/search/index.vue"),
+      },
     ],
   },
   {
@@ -131,7 +135,7 @@ const routes: Array<RouteRecordRaw> = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
 });
 

@@ -1,10 +1,8 @@
 <!--eslint-disable vue/multi-word-component-names */ -->
 <template>
   <div class="nav-bar">
-    <div class="left no-drag">
-      <img src="@/assets/img/netease0.png"/>
-    </div>
-    <NavBarCenter class="center"></NavBarCenter>
+    <div class="left no-drag"><img :src="netease0" /></div>
+    <NavBarCenter></NavBarCenter>
     <NavBarRight class="right"></NavBarRight>
 
     <div class="darkThemeStripe"></div>
@@ -14,6 +12,8 @@
 <script setup lang="ts">
 import NavBarRight from "./right/NavBarRight.vue";
 import NavBarCenter from "./center/index.vue";
+import img from "@/assets/img/netease0.png";
+import netease0 from "@/assets/img/netease0.png";
 </script>
 
 <style scoped lang="scss">
@@ -31,7 +31,7 @@ import NavBarCenter from "./center/index.vue";
     bottom: 1px;
     height: 1.5px;
     width: 100%;
-    @include navbar_stripe()
+    @include navbar_stripe();
   }
   .left {
     img {

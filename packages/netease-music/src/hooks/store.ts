@@ -38,6 +38,7 @@ export function musicActions() {
     replacePlaylist: musicStore.replacePlaylist,
     addPlayList: musicStore.addPlayList,
     changeSong: musicStore.changeSong,
+    addSong: musicStore.addSong,
     cleanPlayList: musicStore.cleanPlayList,
     togglePlayState: musicStore.togglePlayState,
     toggleCutSongWay: musicStore.toggleCutSongWay,

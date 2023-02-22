@@ -17,9 +17,12 @@
           @click="$emit('contentClick', item)"
         />
         <span class="playcount" v-if="item.playCount"
-          >▷&nbsp;{{ simpNum(item.playCount, 7) }}</span
+          >▷&nbsp;{{ simpNum(item.playCount) }}</span
         >
-        <PlayButton class="icon" v-if="playButton"
+        <PlayButton
+          class="icon"
+          v-if="playButton"
+          @playAllButtonClick="playAllButtonClick(item)"
           ><Icon type="you"></Icon
         ></PlayButton>
         <slot></slot>
@@ -38,8 +41,13 @@
 import ImgLoad from "@/components/imgload/index.vue";
 import util from "@/hooks/util";
 import PlayButton from "@/components/playButton/index.vue";
+import { songDetail } from "@/types";
 const { simpNum } = util();
+const emit = defineEmits(["playAllButtonClick"]);
 defineProps(["playButton"]);
+const playAllButtonClick = (item: any) => {
+  emit("playAllButtonClick", item);
+};
 </script>
 
 <style scoped lang="scss">
@@ -80,8 +88,8 @@ defineProps(["playButton"]);
         fill: #fff;
       }
       .text {
-        font-size: 26px;
-        font-weight: bold;
+        font-size: 30px;
+        font-weight: 500;
         fill: #fff;
       }
     }

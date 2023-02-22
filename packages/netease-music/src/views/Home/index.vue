@@ -16,19 +16,20 @@
 </template>
 
 <script lang="ts" setup>
-import { getLoginStatus, getUserDetail } from "@/network/methods";
+import { getLikelist, getLoginStatus, getUserDetail } from "@/network/methods";
 import HomeNavBar from "./HomeNavBar/index.vue";
 import { ipcRenderer } from "electron";
 import { login, logout } from "@/util";
 import HomeMenuList from "./HomeMenuList/index.vue";
 import HomePlayer from "./HomePlayer/index.vue";
-import { useMusicStore } from "@/store/index";
+import { useMusicStore, useProfileStore } from "@/store/index";
 import util from "@/hooks/util";
 const { getStorage, addStorage } = util();
 const router = useRouter();
 const musicStore = useMusicStore();
+const profile = useProfileStore();
 musicStore.$state = JSON.parse(getStorage("music") || "{}");
-
+profile.$state.isLogin = JSON.parse(getStorage("isLogin") || "{}");
 musicStore.$subscribe((mutation, state) => {
   // 每当它发生变化时，将用户状态持久化到本地存储
   let _state = { ...state };
@@ -49,29 +50,56 @@ if (window.history.length > 2) {
   // router.replace("/discover/recommend");
 }
 
+const cookie = getStorage("cookie");
+cookie && (profile.profile.cookie = cookie);
 // 每次初始化页面获取一次用户数据
-getLoginStatus().then((res: any) => {
-  if (res.data.code === 200 && res.data.profile) {
-    getUserDetail(res.data.profile.userId).then((detail: any) => {
-      login(detail);
-    });
-  } else {
+getLoginStatus(cookie)
+  .then((res: any) => {
+    if (res.data.code === 200 && res.data.profile) {
+      getUserDetail(res.data.profile.userId).then((detail: any) => {
+        cookie && (detail = { cookie, ...detail });
+        login(detail);
+        /* 获取到用户信息后获取用户喜欢列表 */
+        getlikelist();
+      });
+    } else {
+      logout();
+    }
+  })
+  .catch(() => {
     logout();
-  }
-});
+  });
 
 // 刷新页面
 const isRouterActive = ref(true);
-provide("reload", () => {
+const reload = () => {
   isRouterActive.value = false;
   nextTick(() => {
     isRouterActive.value = true;
   });
-});
+};
+const getlikelist = () => {
+  profile.profile.userId &&
+    getLikelist(profile.profile.userId).then((res: any) => {
+      if (res.code === 200) {
+        musicStore.addLikeList(res.ids);
+      }
+    });
+};
+provide("reload", reload);
+
+watch(
+  () => profile.isLogin,
+  val => {
+    reload();
+    addStorage("isLogin", JSON.stringify(val));
+  }
+);
 
 /* 接收从登录页发来的登录请求 */
 ipcRenderer.on("login-send", (_, detail) => {
   login(detail);
+  getlikelist();
 });
 </script>
 

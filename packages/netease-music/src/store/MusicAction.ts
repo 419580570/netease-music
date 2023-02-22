@@ -1,43 +1,62 @@
 import { songDetail } from "@/types";
 import type { MusicActions, THIS } from "./music.type";
-const o: Record<string, boolean> = {};
+const o: Record<string, number> = {};
 let obj: MusicActions & THIS = {
   /* 替换播放列表 */
-  replacePlaylist(arr) {
+  replacePlaylist(arr, index = 0) {
     this.playlist = arr.filter(item => item.noCopyrightRcmd === null);
-    this.changeSong(0, true);
+    this.changeSong(index, true);
   },
-  /* 添加单曲到歌单中 */
+  /* 添加歌单到歌单中 */
   addPlayList(song) {
     if (this.playlist && this.playlist.length) {
       let arr: songDetail[] = [];
       this.playlist &&
-        this.playlist.forEach(item => {
-          o[item.id] = true;
+        this.playlist.forEach((item, index) => {
+          o[item.id] = index;
         });
       song.forEach(item => {
-        if (!o[item.id] && item.noCopyrightRcmd === null) arr.push(item);
+        if (!(o[item.id] === undefined && item.noCopyrightRcmd === null)) {
+          this.playlist.splice(o[item.id], 1);
+        }
       });
       if (this.isEnd) {
-        this.playlist.unshift(...arr);
+        this.playlist.push(...song);
       } else {
-        this.playlist.splice(this.currentIndex!, 0, ...arr);
+        this.playlist.splice(this.currentIndex!, 0, ...song);
       }
     } else {
       this.playlist = song;
     }
   },
-  /* 切换播放歌曲 */
-  changeSong(id, index = false) {
-    if (this.isEnd) {
-      this.currentIndex = 0;
+  /* 添加单曲到歌单中 */
+  addSong(song) {
+    const _song = { ...song };
+    const index = this.playlist.findIndex(item => item.id === song.id);
+    if (index !== -1) {
+      this.currentIndex = index;
       return;
     }
-    let oindex = this.currentIndex!;
+    if (this.currentIndex === null || !this.hasPlayList) {
+      this.playlist.push(song);
+      this.currentIndex = this.playlist.length - 1;
+    } else {
+      this.playlist.splice(this.currentIndex + 1, 0, _song);
+      this.currentIndex++;
+    }
+    _song.index = this.currentIndex;
+  },
+  /* 切换播放歌曲 */
+  changeSong(id, index = false) {
+    let oindex = this.currentIndex || 0;
     if (typeof id === "number") {
       oindex = index ? id : this.playlist.findIndex(item => item.id === id);
     } else {
-      if (id === "next") {
+      if (this.isEnd) {
+        if (id === "last") {
+          oindex = this.playlist.length - 2;
+        }
+      } else if (id === "next") {
         oindex++;
       } else if (id === "last") {
         oindex--;
@@ -51,8 +70,14 @@ let obj: MusicActions & THIS = {
   cleanPlayList() {
     if (this.hasPlayList) {
       this.currentIndex = 0;
+      this.progress = 0
+      this.duration = 0
       this.replacePlaylist([]);
     }
+  },
+  /* 添加喜欢列表 */
+  addLikeList(list) {
+    this.likeList = list;
   },
   togglePlayState(state) {
     this.playing = state;

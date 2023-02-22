@@ -7,11 +7,14 @@ let obj: THIS & MusicGetter = {
   getPlayList(state): songDetail[] {
     return state.playlist;
   },
+  getLikeList(state): number[] {
+    return state.likeList;
+  },
   hasPlayList(state): boolean {
     return state.playlist && state.playlist.length !== 0;
   },
   getCurrentId(): number {
-    return this.getCurrentSong === null ? 0 : this.getCurrentSong.id;
+    return this.getCurrentSong ? this.getCurrentSong.id : 0;
   },
   isEnd(state): boolean {
     return state.currentIndex === null;

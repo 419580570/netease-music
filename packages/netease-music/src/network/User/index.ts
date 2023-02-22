@@ -14,6 +14,7 @@ export function getQrCode() {
         const data: any = await get("/login/qr/create", {
           key: res.data.unikey,
           qrimg: true,
+          timestamp: Date.now(),
         });
         if (data.code === 200) {
           resolve({ qrimg: data.data.qrimg, key: res.data.unikey });
@@ -49,9 +50,9 @@ export function getVIP(): Promise<{ data: { associator: VIPList } }> {
   return get("/vip/info");
 }
 
-export function getUserDetail(id?: number) {
+export function getUserDetail(id?: number, cookie?: string) {
   if (!id) {
-    return getLoginStatus().then((res: any) => {
+    return getLoginStatus(cookie).then((res: any) => {
       if (res.data.code === 200) {
         return get("/user/detail", { uid: res.data.profile.userId });
       } else {
@@ -62,8 +63,8 @@ export function getUserDetail(id?: number) {
   return get("/user/detail", { uid: id });
 }
 
-export function getLoginStatus() {
-  return get("/login/status");
+export function getLoginStatus(cookie?: string) {
+  return get("/login/status", cookie && { cookie });
 }
 
 export function logOut() {

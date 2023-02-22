@@ -76,10 +76,10 @@ function polling(): void {
     checkLogin(key).then((res: any) => {
       if (res.code === 803) {
         show.value = false;
-        getUserDetail().then((detail: any) => {
+        getUserDetail(undefined, res.cookie ).then((detail: any) => {
           //根据用户id获取用户详情
           ipcRenderer.send("dialog-close");
-          ipcRenderer.send("login", detail);
+          ipcRenderer.send("login", { cookie: res.cookie, ...detail });
           reload();
         });
         clearInterval(time);

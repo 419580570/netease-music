@@ -19,7 +19,7 @@
         :key="index"
         @click="changeActiveLabel(item)"
       >
-        <Icon :type="item.icon" :size="17"></Icon>
+        <Icon :type="item.icon" :size="item.size || 17"></Icon>
         <span>{{ item.label }}</span>
       </div>
     </div>
@@ -28,17 +28,28 @@
 
 <script lang="ts" setup>
 const router = useRouter();
+interface menuListData {
+  title: string | null;
+  groupItem?: {
+    label: string;
+    icon?: string;
+    url?: string;
+    size?: number;
+  }[];
+  icon?: string;
+  open?: boolean;
+}
 
-const menuList = reactive([
+const menuList = reactive<menuListData[]>([
   {
     title: null,
     groupItem: [
-      { label: "发现音乐", icon: null, url: "/discover" },
-      { label: "播客", icon: null, url: "/broadcast" },
-      { label: "视频", icon: null, url: "/video" },
-      { label: "关注", icon: null, url: "/interest" },
-      { label: "直播", icon: null, url: "/live" },
-      { label: "私人FM", icon: null, url: "/private" },
+      { label: "发现音乐", url: "/discover" },
+      { label: "播客", url: "/broadcast" },
+      { label: "视频", url: "/video" },
+      { label: "关注", url: "/interest" },
+      { label: "直播", url: "/live" },
+      { label: "私人FM", url: "/private" },
     ],
   },
   {
@@ -50,11 +61,12 @@ const menuList = reactive([
       },
       {
         label: "本地与下载",
-        icon: "xiazai",
+        icon: "xiazai1",
       },
       {
         label: "最近播放",
         icon: "recentlyplay",
+        size: 17.5,
       },
     ],
   },

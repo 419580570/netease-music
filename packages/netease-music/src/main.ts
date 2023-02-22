@@ -3,9 +3,8 @@ import { createPinia } from "pinia";
 import ui from "ui";
 import App from "./App.vue";
 import router from "./router";
-// import createPlayer from "player";
 import "./assets/css/index.scss";
-import "ui/theme-chalk/index.scss";
+import "ui/lib/style.css";
 
 const pinia = createPinia();
 
