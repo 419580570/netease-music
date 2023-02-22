@@ -93,7 +93,6 @@ export default function usePlayer(next: Function, cutway: Ref<string>) {
     if (!audio.value) return;
     var timeRange = audio.value.buffered!;
     if (!timeRange.length || !musicStore.duration) return;
-    console.log(timeRange)
     loaded.value =
       (timeRange.end(timeRange.length - 1) / musicStore.duration) * 100 + "%";
   };
